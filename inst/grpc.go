@@ -14,7 +14,7 @@ func InitGrpc() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	api.RegisterGraphServiceServer(s, &flow.Server{})
+	api.RegisterGraphServiceServer(s, flow.NewServer(Gorm))
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
