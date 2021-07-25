@@ -3,8 +3,11 @@ module autoflow
 go 1.16
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.5.0
+	github.com/jinzhu/copier v0.3.2
+	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
-	gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210724135045-a004d9bc5411
+	gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210724143347-f82e492d013d
 	go.uber.org/zap v1.18.1
 	golang.org/x/net v0.0.0-20210716203947-853a461950ff
 	google.golang.org/grpc v1.39.0

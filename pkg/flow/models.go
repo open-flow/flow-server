@@ -10,7 +10,7 @@ type Graph struct {
 	Model
 
 	ProjectID uint64
-	UI        datatypes.JSON
+	UI        datatypes.JSON `gorm:"default:null"`
 
 	Name string
 
@@ -26,7 +26,7 @@ type Event struct {
 	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
 	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
 
-	UI datatypes.JSON
+	UI datatypes.JSON `gorm:"default:null"`
 
 	Name string
 
@@ -60,7 +60,7 @@ type Node struct {
 	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
 	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
 
-	UI datatypes.JSON
+	UI datatypes.JSON `gorm:"default:null"`
 
 	Name string
 

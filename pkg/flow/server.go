@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"github.com/jinzhu/copier"
 	api "gitlab.com/yautoflow/protorepo-flow-server-go"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -19,29 +20,39 @@ func NewServer(orm *gorm.DB) api.GraphServiceServer {
 }
 
 func (s *Server) StoreGraph(c context.Context, graph *api.Graph) (*api.Graph, error) {
+	var err error
 	var entity Graph
-	entity.assignID(graph)
 
-	if graph.ID != 0 {
-		res := s.orm.First(&entity)
+	err = s.orm.Session(&gorm.Session{FullSaveAssociations: true}).Transaction(func(tx *gorm.DB) error {
+		res := tx.FirstOrCreate(&entity, graph)
 		if res.Error != nil {
-			return nil, res.Error
+			return res.Error
 		}
-	} else {
-		res := s.orm.Create(&entity)
+
+		err := copier.CopyWithOption(&entity, graph, copier.Option{DeepCopy: true})
+		if err != nil {
+			return err
+		}
+
+		res = tx.Save(&entity)
 		if res.Error != nil {
-			return nil, res.Error
+			return res.Error
 		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 
-	if entity.assign(graph) {
-		res := s.orm.Save(&entity)
-		if res.Error != nil {
-			return nil, res.Error
-		}
+	var resultGraph api.Graph
+	err = copier.CopyWithOption(&resultGraph, &entity, copier.Option{
+		DeepCopy: true,
+	})
+	if err != nil {
+		return nil, err
 	}
-
-	return nil, status.Error(codes.Unimplemented, "not implemented")
+	return &resultGraph, nil
 }
 
 func (s *Server) StoreNode(c context.Context, node *api.Node) (*api.Node, error) {

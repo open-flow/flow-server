@@ -1,12 +1,7 @@
 package main
 
-import (
-	"autoflow/inst"
-)
+import "autoflow/cmd"
 
 func main() {
-	inst.InitConfig()
-	inst.InitLogger()
-	inst.InitGorm()
-	inst.InitGrpc()
+	cmd.Execute()
 }
