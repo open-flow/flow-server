@@ -1,21 +1,21 @@
 package cmd
 
 import (
-	"autoflow/init"
+	"autoflow/inst"
 	"github.com/spf13/cobra"
 )
 
 var serveCmd = &cobra.Command{
-	Use:   "serve.go",
+	Use:   "serve",
 	Short: "Run server",
 	Run: func(cmd *cobra.Command, args []string) {
-		db := init.Gorm(
-			init.EnvGormConfig(),
+		db := inst.Gorm(
+			inst.EnvGormConfig(),
 		)
 
-		init.StartGrpc(
+		inst.StartGrpc(
 			db,
-			init.EnvGrpcConfig(),
+			inst.EnvGrpcConfig(),
 		)
 	},
 }

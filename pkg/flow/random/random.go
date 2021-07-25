@@ -2,11 +2,13 @@ package random
 
 import (
 	"autoflow/pkg/flow"
-	fake "github.com/brianvoe/gofakeit/v6"
+	gofakeit "github.com/brianvoe/gofakeit/v6"
 	"gorm.io/datatypes"
 )
 
 func Graph() *flow.Graph {
+	fake := gofakeit.NewCrypto()
+
 	var nodesCount = fake.Number(100, 200)
 	var eventsCount = fake.Number(10, 50)
 	var connectionsCount = fake.Number(100, 200)
@@ -66,6 +68,9 @@ func Graph() *flow.Graph {
 			TargetID:   fake.Uint64(),
 		}
 	}
+
+	graph.Name = fake.AppName()
+	graph.ProjectID = 1
 
 	return &graph
 }

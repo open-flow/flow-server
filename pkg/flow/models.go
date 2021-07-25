@@ -2,13 +2,10 @@ package flow
 
 import (
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
-	"time"
 )
 
 type Graph struct {
-	Model
-
+	ID        uint64 `gorm:"primarykey"`
 	ProjectID uint64
 	UI        datatypes.JSON `gorm:"default:null"`
 
@@ -20,8 +17,7 @@ type Graph struct {
 }
 
 type Event struct {
-	Model
-
+	ID           uint64 `gorm:"primarykey"`
 	ProjectID    uint64 `gorm:"index:graph_local,unique,priority=1"`
 	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
 	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
@@ -54,8 +50,7 @@ type EventCard struct {
 }
 
 type Node struct {
-	Model
-
+	ID           uint64 `gorm:"primarykey"`
 	ProjectID    uint64 `gorm:"index:graph_local,unique,priority=1"`
 	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
 	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
@@ -80,11 +75,4 @@ type Connection struct {
 
 	TargetPort string
 	TargetID   uint64
-}
-
-type Model struct {
-	ID        uint64 `gorm:"primarykey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
 }

@@ -1,4 +1,4 @@
-package init
+package inst
 
 import (
 	"autoflow/pkg/flow"

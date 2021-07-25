@@ -1,4 +1,4 @@
-package init
+package inst
 
 import (
 	"autoflow/pkg/flow"
@@ -14,7 +14,8 @@ type GormConfig struct {
 
 func Gorm(config *GormConfig) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(config.MySqlDSN), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		FullSaveAssociations: true,
+		Logger:               logger.Default.LogMode(logger.Info),
 	})
 
 	if err != nil {
