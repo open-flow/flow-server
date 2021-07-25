@@ -112,5 +112,52 @@ func (s *batchService) Save(ctx context.Context, request *api.SaveRequest) (*api
 }
 
 func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
-	panic("implement me")
+	response := &api.DeleteResponse{Ok: true}
+
+	err := s.db.
+		Session(&gorm.Session{
+			Context:         ctx,
+			CreateBatchSize: 15,
+		}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.Where(
+				"project_id = ? and graph_id = ? and id in ?",
+				request.ProjectID,
+				request.GraphID,
+				request.Connections,
+			).Delete(&Connection{})
+			if res.Error != nil {
+				return res.Error
+			}
+
+			res = tx.
+				Where(
+					"project_id = ? and graph_id = ? and id in ?",
+					request.ProjectID,
+					request.GraphID,
+					request.Cards,
+				).Delete(&EventCard{})
+			if res.Error != nil {
+				return res.Error
+			}
+
+			res = tx.
+				Where(
+					"project_id = ? and graph_id = ? and id in ?",
+					request.ProjectID,
+					request.GraphID,
+					request.Nodes,
+				).Delete(&Node{})
+			if res.Error != nil {
+				return res.Error
+			}
+
+			return nil
+		})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
 }
