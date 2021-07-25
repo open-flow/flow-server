@@ -14,15 +14,14 @@ type GormConfig struct {
 
 func Gorm(config *GormConfig) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(config.MySqlDSN), &gorm.Config{
-		FullSaveAssociations: true,
-		Logger:               logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	err = db.AutoMigrate(&flow.Graph{}, &flow.Event{}, &flow.EventCard{}, &flow.Node{}, &flow.Connection{})
+	err = db.AutoMigrate(&flow.Graph{}, &flow.EventCard{}, &flow.Node{}, &flow.Connection{})
 	if err != nil {
 		panic(err)
 	}

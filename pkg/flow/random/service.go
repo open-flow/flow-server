@@ -17,10 +17,12 @@ func NewService(orm *gorm.DB) *Service {
 func (s *Service) StoreRandomGraph() error {
 	var graph = Graph()
 
-	err := s.orm.Session(&gorm.Session{FullSaveAssociations: true}).Transaction(func(tx *gorm.DB) error {
-		res := tx.Create(&graph)
-		return res.Error
-	})
+	err := s.orm.
+		Session(&gorm.Session{FullSaveAssociations: true}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.Create(&graph)
+			return res.Error
+		})
 
 	if err != nil {
 		return err

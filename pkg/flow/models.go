@@ -5,34 +5,42 @@ import (
 )
 
 type Graph struct {
-	ID        uint64 `gorm:"primarykey"`
 	ProjectID uint64
-	UI        datatypes.JSON `gorm:"default:null"`
 
+	ID uint64 `gorm:"primarykey"`
+
+	UI   datatypes.JSON `gorm:"default:null"`
 	Name string
 
-	Nodes       []*Node
-	Events      []*Event
-	Connections []*Connection
+	Nodes       []*Node       `gorm:"constraint:OnDelete:CASCADE;"`
+	Cards       []*EventCard  `gorm:"constraint:OnDelete:CASCADE;"`
+	Connections []*Connection `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
-type Event struct {
-	ID           uint64 `gorm:"primarykey"`
-	ProjectID    uint64 `gorm:"index:graph_local,unique,priority=1"`
-	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
-	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
+type Node struct {
+	ProjectID uint64 `gorm:"index:graph_local,unique,priority=1"`
 
-	UI datatypes.JSON `gorm:"default:null"`
+	ID      uint64 `gorm:"primarykey"`
+	GraphID uint64 `gorm:"index:graph_local,priority=2"`
+	LocalID uint64 `gorm:"index:graph_local,priority=3"`
 
-	Name string
-
-	Cards []*EventCard
+	UI        datatypes.JSON `gorm:"default:null"`
+	Name      string
+	Type      string
+	Module    string
+	Function  string
+	Arguments datatypes.JSON `gorm:"default:null"`
 }
 
 type EventCard struct {
-	ID        uint64 `gorm:"primarykey"`
 	ProjectID uint64
-	EventID   uint64
+
+	ID      uint64 `gorm:"primarykey"`
+	GraphID uint64
+
+	TargetID uint64
+
+	UI datatypes.JSON `gorm:"default:null"`
 
 	Platform string `gorm:"index:owner,priority=1"`
 
@@ -47,28 +55,16 @@ type EventCard struct {
 
 	InitiatorType string `gorm:"index:initiator,priority=1"`
 	InitiatorID   string `gorm:"index:initiator,priority=2"`
-}
 
-type Node struct {
-	ID           uint64 `gorm:"primarykey"`
-	ProjectID    uint64 `gorm:"index:graph_local,unique,priority=1"`
-	GraphID      uint64 `gorm:"index:graph_local,priority=2"`
-	GraphLocalID uint64 `gorm:"index:graph_local,priority=3"`
-
-	UI datatypes.JSON `gorm:"default:null"`
-
-	Name string
-
-	Module   string
-	Function string
-
-	Arguments datatypes.JSON
+	StaticType string `gorm:"index:static,priority=1"`
+	StaticID   string `gorm:"index:static,priority=2"`
 }
 
 type Connection struct {
-	ID        uint64 `gorm:"primarykey"`
 	ProjectID uint64
-	GraphID   uint64
+
+	ID      uint64 `gorm:"primarykey"`
+	GraphID uint64
 
 	SourcePort string
 	SourceID   uint64

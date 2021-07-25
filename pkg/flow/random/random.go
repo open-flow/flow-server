@@ -10,18 +10,18 @@ func Graph() *flow.Graph {
 	fake := gofakeit.NewCrypto()
 
 	var nodesCount = fake.Number(100, 200)
-	var eventsCount = fake.Number(10, 50)
+	var cardsCount = fake.Number(10, 50)
 	var connectionsCount = fake.Number(100, 200)
 
 	var graph flow.Graph
 	graph.Nodes = make([]*flow.Node, nodesCount)
 	for i := 0; i < nodesCount; i++ {
 		graph.Nodes[i] = &flow.Node{
-			GraphID:      0,
-			ProjectID:    1,
-			GraphLocalID: uint64(i),
-			Arguments:    datatypes.JSON("{}"),
-			UI:           datatypes.JSON("{}"),
+			GraphID:   0,
+			ProjectID: 1,
+			LocalID:   uint64(i),
+			Arguments: datatypes.JSON("{}"),
+			UI:        datatypes.JSON("{}"),
 
 			Name:     fake.PetName(),
 			Module:   fake.AppName(),
@@ -29,30 +29,18 @@ func Graph() *flow.Graph {
 		}
 	}
 
-	graph.Events = make([]*flow.Event, eventsCount)
-	for i := 0; i < eventsCount; i++ {
-		var cardsCount = fake.Number(1, 5)
-		var event = &flow.Event{
-			GraphID:      0,
-			ProjectID:    1,
-			GraphLocalID: uint64(i),
-			UI:           datatypes.JSON("{}"),
-
-			Name:  fake.PetName(),
-			Cards: make([]*flow.EventCard, cardsCount),
+	graph.Cards = make([]*flow.EventCard, cardsCount)
+	for i := 0; i < cardsCount; i++ {
+		var event = &flow.EventCard{
+			GraphID:    0,
+			ProjectID:  1,
+			TargetID:   uint64(fake.Number(0, nodesCount)),
+			Platform:   "random",
+			StaticType: "random",
+			StaticID:   fake.UUID(),
 		}
 
-		for o := 0; o < cardsCount; o++ {
-			event.Cards[o] = &flow.EventCard{
-				ID:        0,
-				ProjectID: 1,
-				Platform:  fake.AppName(),
-				OwnerType: fake.PetName(),
-				OwnerID:   fake.UUID(),
-			}
-		}
-
-		graph.Events[i] = event
+		graph.Cards[i] = event
 	}
 
 	graph.Connections = make([]*flow.Connection, connectionsCount)

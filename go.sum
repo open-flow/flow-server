@@ -345,8 +345,8 @@ github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210725095450-26c2be57d669 h1:+6KrcHpeteo9s0irmYGsnI2IFKwyLhN2XYgMuqd8VWY=
-gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210725095450-26c2be57d669/go.mod h1:SrknePBHiyWVs32yM3b1e74EHy8lXtn9aDNf7UqvyZQ=
+gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210725174540-f0146a7478c9 h1:DSkGYVs/wK6zyVOt74MHn25Sb1v5RRWhAC6etpcDOn8=
+gitlab.com/yautoflow/protorepo-flow-server-go v0.0.0-20210725174540-f0146a7478c9/go.mod h1:SrknePBHiyWVs32yM3b1e74EHy8lXtn9aDNf7UqvyZQ=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
 go.etcd.io/etcd/client/v2 v2.305.0/go.mod h1:h9puh54ZTgAKtEbut2oe9P4L/oqKCVB6xsXlzd7alYQ=
