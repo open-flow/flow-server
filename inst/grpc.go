@@ -3,7 +3,7 @@ package inst
 import (
 	"autoflow/pkg/flow"
 	"github.com/spf13/viper"
-	api "gitlab.com/yautoflow/protorepo-flow-server-go"
+	api "gitlab.com/yautoflow/flow-proto/gen/go/flow/v1"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 	"log"

@@ -1,15 +1,16 @@
 package flow
 
 import (
+	"context"
 	"github.com/jinzhu/copier"
-	api "gitlab.com/yautoflow/protorepo-flow-server-go"
-	"golang.org/x/net/context"
+	api "gitlab.com/yautoflow/flow-proto/gen/go/flow/v1"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type graphService struct {
 	db *gorm.DB
+	api.UnimplementedGraphServiceServer
 }
 
 func NewGraphService(db *gorm.DB) api.GraphServiceServer {
@@ -54,25 +55,25 @@ func (s *graphService) SaveConnection(c context.Context, connection *api.Connect
 	return connection, nil
 }
 
-func (s *graphService) DeleteGraph(c context.Context, request *api.IDRequest) (*api.DeleteResponse, error) {
+func (s *graphService) DeleteGraph(c context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
 	return DeleteGeneric(s, c, request, &Graph{})
 }
 
-func (s *graphService) DeleteNode(c context.Context, request *api.IDRequest) (*api.DeleteResponse, error) {
+func (s *graphService) DeleteNode(c context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
 	return DeleteGeneric(s, c, request, &Node{})
 }
 
-func (s *graphService) DeleteEventCard(c context.Context, request *api.IDRequest) (*api.DeleteResponse, error) {
+func (s *graphService) DeleteEventCard(c context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
 	return DeleteGeneric(s, c, request, &EventCard{})
 }
 
-func (s *graphService) DeleteConnection(c context.Context, request *api.IDRequest) (*api.DeleteResponse, error) {
+func (s *graphService) DeleteConnection(c context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
 	return DeleteGeneric(s, c, request, &Connection{})
 }
 
-func (s *graphService) GetFullGraph(c context.Context, request *api.IDRequest) (*api.DeepGraph, error) {
+func (s *graphService) GetFullGraph(c context.Context, request *api.GetFullGraphRequest) (*api.GetFullGraphResponse, error) {
 	var graph = &Graph{}
-	var deepGraph = &api.DeepGraph{
+	var deepGraph = &api.GetFullGraphResponse{
 		Graph: &api.Graph{},
 	}
 
@@ -80,7 +81,7 @@ func (s *graphService) GetFullGraph(c context.Context, request *api.IDRequest) (
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", request.GetProjectID(), request.GetID()).
+				Where("project_id = ? and id = ?", request.GetProjectId(), request.GetId()).
 				Preload(clause.Associations).
 				First(graph)
 
@@ -117,15 +118,15 @@ func (s *graphService) GetFullGraph(c context.Context, request *api.IDRequest) (
 	return deepGraph, nil
 }
 
-func (s *graphService) ListGraph(c context.Context, request *api.ProjectListRequest) (*api.GraphList, error) {
-	var list api.GraphList
+func (s *graphService) ListGraph(c context.Context, request *api.ListGraphRequest) (*api.ListGraphResponse, error) {
+	list := &api.ListGraphResponse{}
 	var graphs []*Graph
 
 	err := s.GetDB().
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id in ?", request.ProjectIDs).
+				Where("project_id in ?", request).
 				Find(&graphs)
 
 			if res.Error != nil {
@@ -143,5 +144,5 @@ func (s *graphService) ListGraph(c context.Context, request *api.ProjectListRequ
 		return nil, err
 	}
 
-	return &list, nil
+	return list, nil
 }

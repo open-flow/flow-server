@@ -2,7 +2,8 @@ package flow
 
 import (
 	"github.com/jinzhu/copier"
-	api "gitlab.com/yautoflow/protorepo-flow-server-go"
+	api "gitlab.com/yautoflow/flow-proto/gen/go/flow/v1"
+
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
@@ -12,8 +13,8 @@ type GenericService interface {
 }
 
 type ApiObject interface {
-	GetID() uint64
-	GetProjectID() uint64
+	GetId() uint64
+	GetProjectId() uint64
 }
 
 func StoreGeneric(s GenericService, c context.Context, obj ApiObject, model interface{}) error {
@@ -21,7 +22,7 @@ func StoreGeneric(s GenericService, c context.Context, obj ApiObject, model inte
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ? and id != 0", obj.GetProjectID(), obj.GetID()).
+				Where("project_id = ? and id = ? and id != 0", obj.GetProjectId(), obj.GetId()).
 				Assign(obj).
 				FirstOrCreate(model)
 
@@ -43,12 +44,12 @@ func StoreGeneric(s GenericService, c context.Context, obj ApiObject, model inte
 	return nil
 }
 
-func DeleteGeneric(s GenericService, c context.Context, req *api.IDRequest, model interface{}) (*api.DeleteResponse, error) {
+func DeleteGeneric(s GenericService, c context.Context, req *api.DeleteRequest, model interface{}) (*api.DeleteResponse, error) {
 	err := s.GetDB().
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", req.GetProjectID(), req.GetID()).
+				Where("project_id = ? and id = ?", req.GetProjectId(), req.GetId()).
 				Delete(model)
 
 			if res.Error != nil {
@@ -61,7 +62,5 @@ func DeleteGeneric(s GenericService, c context.Context, req *api.IDRequest, mode
 		return nil, err
 	}
 
-	return &api.DeleteResponse{
-		Ok: true,
-	}, nil
+	return &api.DeleteResponse{}, nil
 }

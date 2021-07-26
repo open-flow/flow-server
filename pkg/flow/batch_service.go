@@ -1,14 +1,15 @@
 package flow
 
 import (
+	"context"
 	"github.com/jinzhu/copier"
-	api "gitlab.com/yautoflow/protorepo-flow-server-go"
-	"golang.org/x/net/context"
+	api "gitlab.com/yautoflow/flow-proto/gen/go/flow/v1"
 	"gorm.io/gorm"
 )
 
 type batchService struct {
 	db *gorm.DB
+	api.UnimplementedBatchServiceServer
 }
 
 func NewBatchService(db *gorm.DB) api.BatchServiceServer {
@@ -17,10 +18,10 @@ func NewBatchService(db *gorm.DB) api.BatchServiceServer {
 	}
 }
 
-func (s *batchService) Save(ctx context.Context, request *api.SaveRequest) (*api.SaveResponse, error) {
-	response := &api.SaveResponse{
-		ProjectID: request.ProjectID,
-		GraphID:   request.GraphID,
+func (s *batchService) Save(ctx context.Context, request *api.BatchSaveRequest) (*api.BatchSaveResponse, error) {
+	response := &api.BatchSaveResponse{
+		ProjectId: request.ProjectId,
+		GraphId:   request.GraphId,
 	}
 
 	graph := &Graph{}
@@ -42,20 +43,20 @@ func (s *batchService) Save(ctx context.Context, request *api.SaveRequest) (*api
 	}
 
 	for _, v := range *nodes {
-		v.ProjectID = request.ProjectID
-		v.GraphID = request.GraphID
+		v.ProjectID = request.ProjectId
+		v.GraphID = request.GraphId
 		v.ID = 0
 	}
 
 	for _, v := range *cards {
-		v.ProjectID = request.ProjectID
-		v.GraphID = request.GraphID
+		v.ProjectID = request.ProjectId
+		v.GraphID = request.GraphId
 		v.ID = 0
 	}
 
 	for _, v := range *connections {
-		v.ProjectID = request.ProjectID
-		v.GraphID = request.GraphID
+		v.ProjectID = request.ProjectId
+		v.GraphID = request.GraphId
 		v.ID = 0
 	}
 
@@ -66,7 +67,7 @@ func (s *batchService) Save(ctx context.Context, request *api.SaveRequest) (*api
 		}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", request.ProjectID, request.GraphID).
+				Where("project_id = ? and id = ?", request.ProjectId, request.GraphId).
 				First(graph)
 
 			if res.Error != nil {
@@ -111,9 +112,7 @@ func (s *batchService) Save(ctx context.Context, request *api.SaveRequest) (*api
 	return response, nil
 }
 
-func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (*api.DeleteResponse, error) {
-	response := &api.DeleteResponse{Ok: true}
-
+func (s *batchService) Delete(ctx context.Context, request *api.BatchDeleteRequest) (*api.BatchDeleteResponse, error) {
 	err := s.db.
 		Session(&gorm.Session{
 			Context:         ctx,
@@ -122,8 +121,8 @@ func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.Where(
 				"project_id = ? and graph_id = ? and id in ?",
-				request.ProjectID,
-				request.GraphID,
+				request.ProjectId,
+				request.GraphId,
 				request.Connections,
 			).Delete(&Connection{})
 			if res.Error != nil {
@@ -133,8 +132,8 @@ func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (
 			res = tx.
 				Where(
 					"project_id = ? and graph_id = ? and id in ?",
-					request.ProjectID,
-					request.GraphID,
+					request.ProjectId,
+					request.GraphId,
 					request.Cards,
 				).Delete(&EventCard{})
 			if res.Error != nil {
@@ -144,8 +143,8 @@ func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (
 			res = tx.
 				Where(
 					"project_id = ? and graph_id = ? and id in ?",
-					request.ProjectID,
-					request.GraphID,
+					request.ProjectId,
+					request.GraphId,
 					request.Nodes,
 				).Delete(&Node{})
 			if res.Error != nil {
@@ -159,5 +158,5 @@ func (s *batchService) Delete(ctx context.Context, request *api.DeleteRequest) (
 		return nil, err
 	}
 
-	return response, nil
+	return &api.BatchDeleteResponse{}, nil
 }
