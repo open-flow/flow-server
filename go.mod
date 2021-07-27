@@ -7,7 +7,7 @@ require (
 	github.com/jinzhu/copier v0.3.2
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
-	gitlab.com/yautoflow/flow-proto v0.0.0-20210727170447-dfac5a95465b
+	gitlab.com/yautoflow/flow-proto v0.0.0-20210727173412-147eba3ff00a
 	golang.org/x/net v0.0.0-20210716203947-853a461950ff
 	google.golang.org/grpc v1.39.0
 	gorm.io/datatypes v1.0.1
