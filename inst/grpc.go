@@ -23,6 +23,7 @@ func StartGrpc(db *gorm.DB, config *GrpcConfig) {
 	s := grpc.NewServer()
 	api.RegisterGraphServiceServer(s, flow.NewGraphService(db))
 	api.RegisterBatchServiceServer(s, flow.NewBatchService(db))
+	api.RegisterSearchServiceServer(s, flow.NewSearchService(db))
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve.go: %v", err)

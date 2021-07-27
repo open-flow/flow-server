@@ -43,21 +43,21 @@ func (s *batchService) Save(ctx context.Context, request *api.BatchSaveRequest) 
 	}
 
 	for _, v := range *nodes {
-		v.ProjectID = request.ProjectId
-		v.GraphID = request.GraphId
-		v.ID = 0
+		v.ProjectId = request.ProjectId
+		v.GraphId = request.GraphId
+		v.Id = 0
 	}
 
 	for _, v := range *cards {
-		v.ProjectID = request.ProjectId
-		v.GraphID = request.GraphId
-		v.ID = 0
+		v.ProjectId = request.ProjectId
+		v.GraphId = request.GraphId
+		v.Id = 0
 	}
 
 	for _, v := range *connections {
-		v.ProjectID = request.ProjectId
-		v.GraphID = request.GraphId
-		v.ID = 0
+		v.ProjectId = request.ProjectId
+		v.GraphId = request.GraphId
+		v.Id = 0
 	}
 
 	err = s.db.
@@ -67,7 +67,7 @@ func (s *batchService) Save(ctx context.Context, request *api.BatchSaveRequest) 
 		}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", request.ProjectId, request.GraphId).
+				Where("project_Id = ? and Id = ?", request.ProjectId, request.GraphId).
 				First(graph)
 
 			if res.Error != nil {
@@ -120,7 +120,7 @@ func (s *batchService) Delete(ctx context.Context, request *api.BatchDeleteReque
 		}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.Where(
-				"project_id = ? and graph_id = ? and id in ?",
+				"project_Id = ? and graph_Id = ? and Id in ?",
 				request.ProjectId,
 				request.GraphId,
 				request.Connections,
@@ -131,7 +131,7 @@ func (s *batchService) Delete(ctx context.Context, request *api.BatchDeleteReque
 
 			res = tx.
 				Where(
-					"project_id = ? and graph_id = ? and id in ?",
+					"project_Id = ? and graph_Id = ? and Id in ?",
 					request.ProjectId,
 					request.GraphId,
 					request.Cards,
@@ -142,7 +142,7 @@ func (s *batchService) Delete(ctx context.Context, request *api.BatchDeleteReque
 
 			res = tx.
 				Where(
-					"project_id = ? and graph_id = ? and id in ?",
+					"project_Id = ? and graph_Id = ? and Id in ?",
 					request.ProjectId,
 					request.GraphId,
 					request.Nodes,

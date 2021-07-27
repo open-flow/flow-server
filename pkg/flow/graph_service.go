@@ -126,7 +126,7 @@ func (s *graphService) ListGraph(c context.Context, request *api.ListGraphReques
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id in ?", request).
+				Where("project_id in ?", request.ProjectIds).
 				Find(&graphs)
 
 			if res.Error != nil {
