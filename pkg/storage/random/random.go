@@ -1,22 +1,22 @@
 package random
 
 import (
-	"autoflow/pkg/flow"
+	"autoflow/pkg/storage/orm"
 	gofakeit "github.com/brianvoe/gofakeit/v6"
 	"gorm.io/datatypes"
 )
 
-func Graph() *flow.Graph {
+func Graph() *orm.Graph {
 	fake := gofakeit.NewCrypto()
 
 	var nodesCount = fake.Number(100, 200)
 	var cardsCount = fake.Number(10, 50)
 	var connectionsCount = fake.Number(100, 200)
 
-	var graph flow.Graph
-	graph.Nodes = make([]*flow.Node, nodesCount)
+	var graph orm.Graph
+	graph.Nodes = make([]*orm.Node, nodesCount)
 	for i := 0; i < nodesCount; i++ {
-		graph.Nodes[i] = &flow.Node{
+		graph.Nodes[i] = &orm.Node{
 			GraphId:   0,
 			ProjectId: 1,
 			LocalId:   uint64(i),
@@ -29,9 +29,9 @@ func Graph() *flow.Graph {
 		}
 	}
 
-	graph.Cards = make([]*flow.EventCard, cardsCount)
+	graph.Cards = make([]*orm.EventCard, cardsCount)
 	for i := 0; i < cardsCount; i++ {
-		var event = &flow.EventCard{
+		var event = &orm.EventCard{
 			GraphId:    0,
 			ProjectId:  1,
 			TargetId:   uint64(fake.Number(0, nodesCount)),
@@ -43,9 +43,9 @@ func Graph() *flow.Graph {
 		graph.Cards[i] = event
 	}
 
-	graph.Connections = make([]*flow.Connection, connectionsCount)
+	graph.Connections = make([]*orm.Connection, connectionsCount)
 	for i := 0; i < connectionsCount; i++ {
-		graph.Connections[i] = &flow.Connection{
+		graph.Connections[i] = &orm.Connection{
 			GraphId:   0,
 			ProjectId: 1,
 

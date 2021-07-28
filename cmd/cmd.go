@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"autoflow/cmd/storage"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var rootCmd = &cobra.Command{
-	Use: "flow-server",
+	Use: "storage-server",
 }
 
 func Execute() {
@@ -17,8 +18,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(serveCmd)
-	rootCmd.AddCommand(randomGraph)
+	rootCmd.AddCommand(storage.Storage)
 
 	viper.SetConfigFile("config.yaml")
 	viper.SetConfigType("yaml")
