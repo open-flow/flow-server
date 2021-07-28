@@ -1,8 +1,8 @@
 package random
 
 import (
-	"autoflow/pkg/storage/orm"
 	gofakeit "github.com/brianvoe/gofakeit/v6"
+	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/datatypes"
 )
 

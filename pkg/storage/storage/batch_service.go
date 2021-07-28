@@ -1,9 +1,9 @@
 package storage
 
 import (
-	"autoflow/pkg/storage/dtos"
-	"autoflow/pkg/storage/orm"
 	"context"
+	"gitlab.com/yautoflow/interfaces/dtos"
+	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/gorm"
 )
 

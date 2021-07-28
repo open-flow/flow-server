@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"autoflow/pkg/storage/dtos"
+	"gitlab.com/yautoflow/interfaces/dtos"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )

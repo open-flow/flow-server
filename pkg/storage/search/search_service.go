@@ -1,10 +1,10 @@
 package search
 
 import (
-	"autoflow/pkg/storage/dtos"
-	"autoflow/pkg/storage/orm"
 	"context"
 	"fmt"
+	"gitlab.com/yautoflow/interfaces/dtos"
+	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
