@@ -1,8 +1,8 @@
 package inst
 
 import (
+	"autoflow/pkg/orm"
 	"github.com/spf13/viper"
-	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

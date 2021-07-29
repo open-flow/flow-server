@@ -1,9 +1,9 @@
-package storage
+package graph
 
 import (
+	"autoflow/pkg/dtos"
+	"autoflow/pkg/orm"
 	"context"
-	"gitlab.com/yautoflow/interfaces/dtos"
-	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/gorm"
 )
 

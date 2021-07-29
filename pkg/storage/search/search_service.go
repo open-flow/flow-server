@@ -1,10 +1,10 @@
 package search
 
 import (
+	"autoflow/pkg/dtos"
+	"autoflow/pkg/orm"
 	"context"
 	"fmt"
-	"gitlab.com/yautoflow/interfaces/dtos"
-	"gitlab.com/yautoflow/interfaces/orm"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -19,7 +19,7 @@ func NewService(db *gorm.DB) *Service {
 	}
 }
 
-func (s *Service) FindEventNode(ctx context.Context, req dtos.EventSearchRequest) (*dtos.EventSearchResponse, error) {
+func (s *Service) FindActiveGraph(ctx context.Context, req *dtos.ActiveEvent) (*dtos.FindActiveGraphResponse, error) {
 	if req.OwnerType == "" || req.OwnerId == "" {
 		return nil, fmt.Errorf("owner_type and owner_id are mandatory")
 	}
@@ -75,7 +75,7 @@ func (s *Service) FindEventNode(ctx context.Context, req dtos.EventSearchRequest
 		activeGraphs = append(activeGraphs, active)
 	}
 
-	return &dtos.EventSearchResponse{
+	return &dtos.FindActiveGraphResponse{
 		Graphs: activeGraphs,
 	}, nil
 }
