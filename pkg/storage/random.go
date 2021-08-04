@@ -1,21 +1,22 @@
-package random
+package storage
 
 import (
+	utils2 "autoflow/pkg/utils"
 	"gorm.io/gorm"
 )
 
-type Service struct {
+type RandomService struct {
 	orm *gorm.DB
 }
 
-func NewService(orm *gorm.DB) *Service {
-	return &Service{
+func NewRandomService(orm *gorm.DB) *RandomService {
+	return &RandomService{
 		orm: orm,
 	}
 }
 
-func (s *Service) StoreRandomGraph() error {
-	var graph = Graph()
+func (s *RandomService) StoreRandomGraph() error {
+	var graph = utils2.Graph()
 
 	err := s.orm.
 		Session(&gorm.Session{FullSaveAssociations: true}).

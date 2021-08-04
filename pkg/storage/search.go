@@ -1,4 +1,4 @@
-package search
+package storage
 
 import (
 	"autoflow/pkg/dtos"
@@ -9,17 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type Service struct {
+type SearchService struct {
 	db *gorm.DB
 }
 
-func NewService(db *gorm.DB) *Service {
-	return &Service{
+func NewSearchService(db *gorm.DB) *SearchService {
+	return &SearchService{
 		db: db,
 	}
 }
 
-func (s *Service) FindActiveGraph(ctx context.Context, req *dtos.ActiveEvent) (*dtos.FindActiveGraphResponse, error) {
+func (s *SearchService) FindActiveGraph(ctx context.Context, req *dtos.ActiveEvent) (*dtos.FindActiveGraphResponse, error) {
 	if req.OwnerType == "" || req.OwnerId == "" {
 		return nil, fmt.Errorf("owner_type and owner_id are mandatory")
 	}

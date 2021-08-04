@@ -1,4 +1,4 @@
-package graph
+package storage
 
 import (
 	"autoflow/pkg/dtos"

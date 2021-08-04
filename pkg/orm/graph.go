@@ -42,6 +42,8 @@ type EventCard struct {
 
 	Ui datatypes.JSON `gorm:"default:null"`
 
+	HttpResponse bool
+
 	Platform string `gorm:"index:owner,priority=1"`
 
 	OwnerType string `gorm:"index:owner,priority=2"`
