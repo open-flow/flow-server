@@ -12,7 +12,8 @@ type RegistryService struct {
 
 func NewRegistryService(logger *zap.Logger) *RegistryService {
 	service := &RegistryService{
-		logger: logger.With(zap.String("service", "RegistryService")),
+		Endpoints: map[string]Endpoint{},
+		logger:    logger.With(zap.String("service", "RegistryService")),
 	}
 	return service
 }

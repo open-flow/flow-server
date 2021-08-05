@@ -19,35 +19,98 @@ func NewGraphService(db *gorm.DB) *GraphService {
 }
 
 func (s *GraphService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Graph, error) {
-	err := s.StoreGeneric(c, graph)
+	var persisted orm.Graph
+	err := s.db.
+		Session(&gorm.Session{Context: c}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.
+				Where("project_id = ? and id = ?", graph.ProjectId, graph.Id).
+				Assign(graph).
+				FirstOrCreate(&persisted)
+
+			if res.Error != nil {
+				return res.Error
+			}
+			return nil
+		})
+
 	if err != nil {
 		return nil, err
 	}
-	return graph, nil
+
+	return &persisted, nil
 }
 
 func (s *GraphService) SaveNode(c context.Context, node *orm.Node) (*orm.Node, error) {
-	err := s.StoreGeneric(c, node)
+	var persisted orm.Node
+
+	err := s.db.
+		Session(&gorm.Session{Context: c}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.
+				Where("project_id = ? and id = ?", node.ProjectId, node.Id).
+				Assign(node).
+				FirstOrCreate(&persisted)
+
+			if res.Error != nil {
+				return res.Error
+			}
+			return nil
+		})
+
 	if err != nil {
 		return nil, err
 	}
-	return node, nil
+
+	return &persisted, nil
 }
 
 func (s *GraphService) SaveEventCard(c context.Context, card *orm.EventCard) (*orm.EventCard, error) {
-	err := s.StoreGeneric(c, card)
+	var persisted orm.EventCard
+
+	err := s.db.
+		Session(&gorm.Session{Context: c}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.
+				Where("project_id = ? and id = ?", card.ProjectId, card.Id).
+				Assign(card).
+				FirstOrCreate(&persisted)
+
+			if res.Error != nil {
+				return res.Error
+			}
+			return nil
+		})
+
 	if err != nil {
 		return nil, err
 	}
-	return card, nil
+
+	return &persisted, nil
 }
 
 func (s *GraphService) SaveConnection(c context.Context, connection *orm.Connection) (*orm.Connection, error) {
-	err := s.StoreGeneric(c, connection)
+	var persisted orm.Connection
+
+	err := s.db.
+		Session(&gorm.Session{Context: c}).
+		Transaction(func(tx *gorm.DB) error {
+			res := tx.
+				Where("project_id = ? and id = ?", connection.ProjectId, connection.Id).
+				Assign(connection).
+				FirstOrCreate(&persisted)
+
+			if res.Error != nil {
+				return res.Error
+			}
+			return nil
+		})
+
 	if err != nil {
 		return nil, err
 	}
-	return connection, nil
+
+	return &persisted, nil
 }
 
 func (s *GraphService) DeleteGraph(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {

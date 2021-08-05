@@ -1,0 +1,34 @@
+POST http://{{host}}/batch/save
+Content-Type: application/json
+
+{
+  "ProjectId": 1,
+  "GraphId": 1,
+  "Nodes": [
+    {
+    }
+  ],
+  "Connections": [
+    {
+    }
+  ],
+  "EventCards": [
+    {
+      "OwnerType": "project",
+      "OwnerId": "1"
+    }
+  ]
+}
+
+###
+POST http://{{host}}/graph/save-graph
+Content-Type: application/json
+
+{
+  "ProjectId": 1,
+  "Id": 1,
+  "LocalIdCounter": 100,
+  "Name": "DevGraph2!"
+}
+
+###

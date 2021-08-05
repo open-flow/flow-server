@@ -1,9 +1,5 @@
 package orm
 
-import (
-	"gorm.io/datatypes"
-)
-
 type Connection struct {
 	//ID
 	ProjectId uint64
@@ -18,9 +14,9 @@ type Connection struct {
 	TargetId   uint64
 
 	//Invokation
-	Data datatypes.JSON `gorm:"default:null"`
+	Data string
 
 	// UI
 	Name string
-	Ui   datatypes.JSON `gorm:"default:null"`
+	Ui   string
 }

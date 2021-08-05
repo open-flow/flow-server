@@ -20,19 +20,19 @@ func NewBatchService(db *gorm.DB) *BatchService {
 func (s *BatchService) Save(ctx context.Context, r *storage.RequestBatchSave) (*storage.ResponseBatchSave, error) {
 	graph := &orm.Graph{}
 
-	for _, v := range graph.Nodes {
+	for _, v := range r.Nodes {
 		v.ProjectId = r.ProjectId
 		v.GraphId = r.GraphId
 		v.Id = 0
 	}
 
-	for _, v := range graph.Cards {
+	for _, v := range r.Cards {
 		v.ProjectId = r.ProjectId
 		v.GraphId = r.GraphId
 		v.Id = 0
 	}
 
-	for _, v := range graph.Connections {
+	for _, v := range r.Connections {
 		v.ProjectId = r.ProjectId
 		v.GraphId = r.GraphId
 		v.Id = 0
@@ -45,24 +45,24 @@ func (s *BatchService) Save(ctx context.Context, r *storage.RequestBatchSave) (*
 		}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_Id = ? and Id = ?", r.ProjectId, r.GraphId).
+				Where("project_id = ? and id = ?", r.ProjectId, r.GraphId).
 				First(graph)
 
 			if res.Error != nil {
 				return res.Error
 			}
 
-			res = tx.Create(graph.Nodes)
+			res = tx.Create(r.Nodes)
 			if res.Error != nil {
 				return res.Error
 			}
 
-			res = tx.Create(graph.Cards)
+			res = tx.Create(r.Cards)
 			if res.Error != nil {
 				return res.Error
 			}
 
-			res = tx.Create(graph.Connections)
+			res = tx.Create(r.Connections)
 			if res.Error != nil {
 				return res.Error
 			}
@@ -77,9 +77,9 @@ func (s *BatchService) Save(ctx context.Context, r *storage.RequestBatchSave) (*
 	return &storage.ResponseBatchSave{
 		ProjectId:   r.ProjectId,
 		GraphId:     r.GraphId,
-		Nodes:       graph.Nodes,
-		Cards:       graph.Cards,
-		Connections: graph.Connections,
+		Nodes:       r.Nodes,
+		Cards:       r.Cards,
+		Connections: r.Connections,
 	}, nil
 }
 

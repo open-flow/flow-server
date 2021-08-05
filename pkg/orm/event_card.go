@@ -1,7 +1,5 @@
 package orm
 
-import "gorm.io/datatypes"
-
 type EventCard struct {
 	//Id
 	ProjectId uint64
@@ -9,8 +7,8 @@ type EventCard struct {
 	GraphId   uint64
 
 	//Placement
-	SourceLocalId uint64
-	SlidePort     string
+	TargetId  uint64
+	SlidePort string
 
 	//Event search
 	HttpVote uint64
@@ -33,6 +31,6 @@ type EventCard struct {
 	StaticId   string `gorm:"index:static,priority=2"`
 
 	//UI
-	Ui   datatypes.JSON `gorm:"default:null"`
+	Ui   string
 	Name string
 }

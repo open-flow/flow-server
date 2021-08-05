@@ -28,7 +28,7 @@ func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry.RegistryService, lo
 				endpoint := registry.NewHttpEndpoint(e.Url, e.Module, logger)
 				err := endpoint.Initialize()
 				if err != nil {
-
+					return err
 				}
 				svc.RegisterEndpoint(endpoint)
 			}

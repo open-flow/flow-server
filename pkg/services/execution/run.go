@@ -1,6 +1,7 @@
 package execution
 
 import (
+	"autoflow/pkg/data"
 	"autoflow/pkg/dtos/execution"
 	"autoflow/pkg/utils"
 	"go.uber.org/zap"
@@ -20,7 +21,7 @@ LOOP:
 		current := state.Cursor.Next[0]
 		state.Cursor.Next = nil
 
-		state.Cursor.Node = state.Graph.FindNode(current.TargetId)
+		state.Cursor.Node = data.FindNode(state.Graph, current.TargetId)
 		state.Cursor.Current = current
 
 		state.Cursor.Path = append(state.Cursor.Path, current)
@@ -48,6 +49,8 @@ LOOP:
 			return
 		}
 
+		logger.Info("successful call", zap.Any("response", wrapper))
+
 		slidePorts := []string{"default"}
 
 		if wrapper.Action != nil {
@@ -67,7 +70,7 @@ LOOP:
 
 		var next []*execution.Connection
 		for _, sp := range slidePorts {
-			next = append(next, state.Graph.FindConnectedNodes(state.Cursor.Node.LocalId, sp)...)
+			next = append(next, data.FindConnectedNodes(state.Graph, state.Cursor.Node.LocalId, sp)...)
 		}
 		state.Cursor.Next = next
 		state.Cursor.Node = nil

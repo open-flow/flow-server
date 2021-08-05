@@ -1,7 +1,5 @@
 package orm
 
-import "gorm.io/datatypes"
-
 type Node struct {
 	//ID
 	ProjectId uint64 `gorm:"index:graph_local,unique,priority=1"`
@@ -15,9 +13,9 @@ type Node struct {
 	Type      string
 	Module    string
 	Function  string
-	Arguments datatypes.JSON `gorm:"default:null"`
+	Arguments string
 
 	//UI
-	Ui   datatypes.JSON `gorm:"default:null"`
+	Ui   string
 	Name string
 }

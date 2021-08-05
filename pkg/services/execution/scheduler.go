@@ -1,6 +1,7 @@
 package execution
 
 import (
+	"autoflow/pkg/data"
 	"autoflow/pkg/dtos/execution"
 	"autoflow/pkg/dtos/storage"
 	"autoflow/pkg/orm"
@@ -32,11 +33,16 @@ func (s *ScheduleService) Schedule(
 		Card:       ac,
 		RawRequest: req.RawRequest,
 	}
-	cursor := &execution.Cursor{
-		Node: graph.FindNode(ac.SourceLocalId),
-	}
+	cursor := &execution.Cursor{}
+
 	if ac.SlidePort != "" {
-		cursor.Next = graph.FindConnectedNodes(ac.SourceLocalId, ac.SlidePort)
+		cursor.Next = data.FindConnectedNodes(graph, ac.TargetId, ac.SlidePort)
+	} else {
+		cursor.Next = []*execution.Connection{
+			{
+				TargetId: ac.TargetId,
+			},
+		}
 	}
 
 	memory := &execution.Memory{
