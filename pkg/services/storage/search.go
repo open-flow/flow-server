@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"autoflow/pkg/dtos"
+	"autoflow/pkg/dtos/storage"
 	"autoflow/pkg/orm"
 	"context"
 	"fmt"
@@ -19,7 +19,7 @@ func NewSearchService(db *gorm.DB) *SearchService {
 	}
 }
 
-func (s *SearchService) FindActiveGraph(ctx context.Context, req *dtos.ActiveEvent) (*dtos.FindActiveGraphResponse, error) {
+func (s *SearchService) FindActiveGraph(ctx context.Context, req *storage.RequestFindActiveGraph) (*storage.ResponseFindActiveGraph, error) {
 	if req.OwnerType == "" || req.OwnerId == "" {
 		return nil, fmt.Errorf("owner_type and owner_id are mandatory")
 	}
@@ -66,16 +66,16 @@ func (s *SearchService) FindActiveGraph(ctx context.Context, req *dtos.ActiveEve
 		cardsMap[c.GraphId] = append(slice, c)
 	}
 
-	var activeGraphs []*dtos.ActiveGraph
+	var activeGraphs []*storage.ActiveGraph
 	for _, g := range graphMap {
-		active := &dtos.ActiveGraph{
+		active := &storage.ActiveGraph{
 			Graph:       g,
 			ActiveCards: cardsMap[g.Id],
 		}
 		activeGraphs = append(activeGraphs, active)
 	}
 
-	return &dtos.FindActiveGraphResponse{
+	return &storage.ResponseFindActiveGraph{
 		Graphs: activeGraphs,
 	}, nil
 }

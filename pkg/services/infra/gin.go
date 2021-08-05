@@ -1,23 +1,26 @@
 package infra
 
 import (
-	"autoflow/pkg/runner"
-	"autoflow/pkg/storage"
+	runner2 "autoflow/pkg/services/execution"
+	storage2 "autoflow/pkg/services/storage"
 	"autoflow/pkg/utils"
+	"context"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 	"net/http"
+	"time"
 )
 
 type Services struct {
 	fx.In
-	Search  *storage.SearchService
-	Batch   *storage.BatchService
-	Storage *storage.StorageService
-	Execute *runner.ExecuteService
+	Config  *FlowConfig
+	Search  *storage2.SearchService
+	Batch   *storage2.BatchService
+	Storage *storage2.GraphService
+	Execute *runner2.ExecuteService
 }
 
-func NewGin(s Services) *gin.Engine {
+func NewGin(ls fx.Lifecycle, s Services) *gin.Engine {
 	g := gin.New()
 	bg := utils.BindGinFactory(g)
 
@@ -39,6 +42,24 @@ func NewGin(s Services) *gin.Engine {
 	bg(http.MethodGet, "graph/list-graphs", s.Storage.ListGraph)
 	bg(http.MethodGet, "graph/full-graph", s.Storage.GetFullGraph)
 	bg(http.MethodPost, "execute", s.Execute.ExecuteActiveCard)
+
+	ls.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			errCh := make(chan error)
+
+			go func() {
+				err := g.Run(s.Config.HttpAddr)
+				errCh <- err
+			}()
+
+			select {
+			case err := <-errCh:
+				return err
+			case <-time.After(1 * time.Second):
+				return nil
+			}
+		},
+	})
 
 	return g
 }

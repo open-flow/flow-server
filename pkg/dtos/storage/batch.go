@@ -1,8 +1,8 @@
-package dtos
+package storage
 
 import "autoflow/pkg/orm"
 
-type BatchSaveRequest struct {
+type RequestBatchSave struct {
 	ProjectId uint64
 	GraphId   uint64
 
@@ -11,7 +11,7 @@ type BatchSaveRequest struct {
 	Connections []*orm.Connection
 }
 
-type BatchSaveResponse struct {
+type ResponseBatchSave struct {
 	ProjectId uint64
 	GraphId   uint64
 
@@ -20,7 +20,7 @@ type BatchSaveResponse struct {
 	Connections []*orm.Connection
 }
 
-type BatchDeleteRequest struct {
+type RequestBatchDelete struct {
 	ProjectId   uint64
 	GraphId     uint64
 	Nodes       []uint64
@@ -28,5 +28,5 @@ type BatchDeleteRequest struct {
 	Connections []uint64
 }
 
-type BatchDeleteResponse struct {
+type ResponseBatchDelete struct {
 }

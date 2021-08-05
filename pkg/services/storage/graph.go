@@ -1,24 +1,24 @@
 package storage
 
 import (
-	"autoflow/pkg/dtos"
+	"autoflow/pkg/dtos/storage"
 	"autoflow/pkg/orm"
 	"context"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-type StorageService struct {
+type GraphService struct {
 	db *gorm.DB
 }
 
-func NewStorageService(db *gorm.DB) *StorageService {
-	return &StorageService{
+func NewGraphService(db *gorm.DB) *GraphService {
+	return &GraphService{
 		db: db,
 	}
 }
 
-func (s *StorageService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Graph, error) {
+func (s *GraphService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Graph, error) {
 	err := s.StoreGeneric(c, graph)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func (s *StorageService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Gr
 	return graph, nil
 }
 
-func (s *StorageService) SaveNode(c context.Context, node *orm.Node) (*orm.Node, error) {
+func (s *GraphService) SaveNode(c context.Context, node *orm.Node) (*orm.Node, error) {
 	err := s.StoreGeneric(c, node)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (s *StorageService) SaveNode(c context.Context, node *orm.Node) (*orm.Node,
 	return node, nil
 }
 
-func (s *StorageService) SaveEventCard(c context.Context, card *orm.EventCard) (*orm.EventCard, error) {
+func (s *GraphService) SaveEventCard(c context.Context, card *orm.EventCard) (*orm.EventCard, error) {
 	err := s.StoreGeneric(c, card)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (s *StorageService) SaveEventCard(c context.Context, card *orm.EventCard) (
 	return card, nil
 }
 
-func (s *StorageService) SaveConnection(c context.Context, connection *orm.Connection) (*orm.Connection, error) {
+func (s *GraphService) SaveConnection(c context.Context, connection *orm.Connection) (*orm.Connection, error) {
 	err := s.StoreGeneric(c, connection)
 	if err != nil {
 		return nil, err
@@ -50,23 +50,23 @@ func (s *StorageService) SaveConnection(c context.Context, connection *orm.Conne
 	return connection, nil
 }
 
-func (s *StorageService) DeleteGraph(c context.Context, request *dtos.DeleteRequest) (*dtos.DeleteResponse, error) {
+func (s *GraphService) DeleteGraph(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
 	return s.DeleteGeneric(c, request, &orm.Graph{})
 }
 
-func (s *StorageService) DeleteNode(c context.Context, request *dtos.DeleteRequest) (*dtos.DeleteResponse, error) {
+func (s *GraphService) DeleteNode(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
 	return s.DeleteGeneric(c, request, &orm.Node{})
 }
 
-func (s *StorageService) DeleteEventCard(c context.Context, request *dtos.DeleteRequest) (*dtos.DeleteResponse, error) {
+func (s *GraphService) DeleteEventCard(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
 	return s.DeleteGeneric(c, request, &orm.EventCard{})
 }
 
-func (s *StorageService) DeleteConnection(c context.Context, request *dtos.DeleteRequest) (*dtos.DeleteResponse, error) {
+func (s *GraphService) DeleteConnection(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
 	return s.DeleteGeneric(c, request, &orm.Connection{})
 }
 
-func (s *StorageService) GetFullGraph(c context.Context, r *dtos.GetFullGraphRequest) (*orm.Graph, error) {
+func (s *GraphService) GetFullGraph(c context.Context, r *storage.RequestGetFullGraph) (*orm.Graph, error) {
 	var graph = &orm.Graph{}
 
 	err := s.db.
@@ -90,7 +90,7 @@ func (s *StorageService) GetFullGraph(c context.Context, r *dtos.GetFullGraphReq
 	return graph, nil
 }
 
-func (s *StorageService) ListGraph(c context.Context, r *dtos.ListGraphRequest) (*dtos.ListGraphResponse, error) {
+func (s *GraphService) ListGraph(c context.Context, r *storage.RequestListGraph) (*storage.ResponseListGraph, error) {
 	var graphs []*orm.Graph
 
 	err := s.db.
@@ -110,12 +110,12 @@ func (s *StorageService) ListGraph(c context.Context, r *dtos.ListGraphRequest) 
 		return nil, err
 	}
 
-	return &dtos.ListGraphResponse{
+	return &storage.ResponseListGraph{
 		Graphs: graphs,
 	}, nil
 }
 
-func (s *StorageService) StoreGeneric(c context.Context, model interface{}) error {
+func (s *GraphService) StoreGeneric(c context.Context, model interface{}) error {
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
@@ -135,7 +135,7 @@ func (s *StorageService) StoreGeneric(c context.Context, model interface{}) erro
 	return nil
 }
 
-func (s *StorageService) DeleteGeneric(c context.Context, req *dtos.DeleteRequest, model interface{}) (*dtos.DeleteResponse, error) {
+func (s *GraphService) DeleteGeneric(c context.Context, req *storage.RequestDelete, model interface{}) (*storage.ResponseDelete, error) {
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
@@ -153,5 +153,5 @@ func (s *StorageService) DeleteGeneric(c context.Context, req *dtos.DeleteReques
 		return nil, err
 	}
 
-	return &dtos.DeleteResponse{}, nil
+	return &storage.ResponseDelete{}, nil
 }

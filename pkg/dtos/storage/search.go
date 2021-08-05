@@ -1,8 +1,8 @@
-package dtos
+package storage
 
 import "autoflow/pkg/orm"
 
-type ActiveEvent struct {
+type RequestFindActiveGraph struct {
 	Platform string
 
 	OwnerType string
@@ -21,11 +21,11 @@ type ActiveEvent struct {
 	StaticId   string
 }
 
-type FindActiveGraphResponse struct {
-	Graphs []*ActiveGraph
-}
-
 type ActiveGraph struct {
 	Graph       *orm.Graph
 	ActiveCards []*orm.EventCard
+}
+
+type ResponseFindActiveGraph struct {
+	Graphs []*ActiveGraph
 }

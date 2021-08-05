@@ -32,12 +32,12 @@ func Graph() *orm.Graph {
 	graph.Cards = make([]*orm.EventCard, cardsCount)
 	for i := 0; i < cardsCount; i++ {
 		var event = &orm.EventCard{
-			GraphId:    0,
-			ProjectId:  1,
-			TargetId:   uint64(fake.Number(0, nodesCount)),
-			Platform:   "random",
-			StaticType: "random",
-			StaticId:   fake.UUID(),
+			GraphId:       0,
+			ProjectId:     1,
+			SourceLocalId: uint64(fake.Number(0, nodesCount)),
+			Platform:      "random",
+			StaticType:    "random",
+			StaticId:      fake.UUID(),
 		}
 
 		graph.Cards[i] = event

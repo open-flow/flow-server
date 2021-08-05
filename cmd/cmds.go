@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	inst2 "autoflow/pkg/infra"
-	"autoflow/pkg/runner"
-	"autoflow/pkg/storage"
-	"github.com/gin-gonic/gin"
+	"autoflow/pkg/services/execution"
+	infra2 "autoflow/pkg/services/infra"
+	"autoflow/pkg/services/registry"
+	"autoflow/pkg/services/registry/static"
+	"autoflow/pkg/services/storage"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
@@ -29,30 +30,28 @@ var serve = &cobra.Command{
 	Use:   "serve",
 	Short: "Serve service",
 	Run: func(cmd *cobra.Command, args []string) {
-		var g *gin.Engine
-		var config *inst2.FlowConfig
-		fx.New(
+		app := fx.New(
 			Provide(),
-			fx.Populate(&g, &config),
+			fx.Invoke(infra2.NewGin, static.HttpEndpointStaticConfig),
 		)
-
-		err := g.Run(config.HttpAddr)
-		if err != nil {
-			panic(err)
-		}
+		app.Run()
 	},
 }
 
 func Provide() fx.Option {
 	return fx.Provide(
 		storage.NewBatchService,
-		storage.NewStorageService,
+		storage.NewGraphService,
 		storage.NewRandomService,
 		storage.NewSearchService,
-		runner.NewScheduleService,
-		runner.NewExecuteService,
-		inst2.NewGin,
-		inst2.NewConfig,
-		inst2.NewGorm,
+		execution.NewScheduleService,
+		execution.NewExecuteService,
+		infra2.NewGin,
+		infra2.NewConfig,
+		infra2.NewGorm,
+		static.HttpEndpointStaticConfig,
+		registry.NewRegistryService,
+		infra2.NewLogger,
+		infra2.NewSugaredLogger,
 	)
 }

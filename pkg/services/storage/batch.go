@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"autoflow/pkg/dtos"
+	"autoflow/pkg/dtos/storage"
 	"autoflow/pkg/orm"
 	"context"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ func NewBatchService(db *gorm.DB) *BatchService {
 	}
 }
 
-func (s *BatchService) Save(ctx context.Context, r *dtos.BatchSaveRequest) (*dtos.BatchSaveResponse, error) {
+func (s *BatchService) Save(ctx context.Context, r *storage.RequestBatchSave) (*storage.ResponseBatchSave, error) {
 	graph := &orm.Graph{}
 
 	for _, v := range graph.Nodes {
@@ -74,7 +74,7 @@ func (s *BatchService) Save(ctx context.Context, r *dtos.BatchSaveRequest) (*dto
 		return nil, err
 	}
 
-	return &dtos.BatchSaveResponse{
+	return &storage.ResponseBatchSave{
 		ProjectId:   r.ProjectId,
 		GraphId:     r.GraphId,
 		Nodes:       graph.Nodes,
@@ -83,7 +83,7 @@ func (s *BatchService) Save(ctx context.Context, r *dtos.BatchSaveRequest) (*dto
 	}, nil
 }
 
-func (s *BatchService) Delete(ctx context.Context, r *dtos.BatchDeleteRequest) (*dtos.BatchDeleteResponse, error) {
+func (s *BatchService) Delete(ctx context.Context, r *storage.RequestBatchDelete) (*storage.ResponseBatchDelete, error) {
 	err := s.db.
 		Session(&gorm.Session{
 			Context:         ctx,
@@ -129,5 +129,5 @@ func (s *BatchService) Delete(ctx context.Context, r *dtos.BatchDeleteRequest) (
 		return nil, err
 	}
 
-	return &dtos.BatchDeleteResponse{}, nil
+	return &storage.ResponseBatchDelete{}, nil
 }
