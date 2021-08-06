@@ -24,7 +24,7 @@ func (s *Service) SaveGraph(c context.Context, data *graph.DBGraph) (*graph.DBGr
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", data.ProjectID, data.ID).
+				Where("project_id = ? and id = ?", data.ProjectId, data.Id).
 				Assign(data).
 				FirstOrCreate(&persisted)
 
@@ -48,7 +48,7 @@ func (s *Service) SaveNode(c context.Context, node *graph.DBNode) (*graph.DBNode
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", node.ProjectID, node.ID).
+				Where("project_id = ? and id = ?", node.ProjectId, node.Id).
 				Assign(node).
 				FirstOrCreate(&persisted)
 
@@ -72,7 +72,7 @@ func (s *Service) SaveEventCard(c context.Context, card *graph.DBEventCard) (*gr
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", card.ProjectID, card.ID).
+				Where("project_id = ? and id = ?", card.ProjectId, card.Id).
 				Assign(card).
 				FirstOrCreate(&persisted)
 
@@ -96,7 +96,7 @@ func (s *Service) SaveConnection(c context.Context, connection *graph.DBConnecti
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", connection.ProjectID, connection.ID).
+				Where("project_id = ? and id = ?", connection.ProjectId, connection.Id).
 				Assign(connection).
 				FirstOrCreate(&persisted)
 
@@ -129,14 +129,14 @@ func (s *Service) DeleteConnection(c context.Context, request *storage.DeleteReq
 	return s.DeleteGeneric(c, request, &graph.DBConnection{})
 }
 
-func (s *Service) GetFullGraph(c context.Context, r *storage.GetGraphRequest) (*graph.DBGraph, error) {
+func (s *Service) GetGraph(c context.Context, r *storage.GetGraphRequest) (*graph.DBGraph, error) {
 	var g = &graph.DBGraph{}
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", r.ProjectID, r.ID).
+				Where("project_id = ? and id = ?", r.ProjectId, r.Id).
 				Preload(clause.Associations).
 				First(g)
 
@@ -154,14 +154,15 @@ func (s *Service) GetFullGraph(c context.Context, r *storage.GetGraphRequest) (*
 }
 
 func (s *Service) ListGraph(c context.Context, r *storage.ListGraphRequest) (*storage.ListGraphResponse, error) {
-	var graphs []*graph.DBGraph
+	var graphs []graph.DBGraph
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id in ?", r.ProjectIDs).
+				Where("project_id in ?", r.ProjectId).
 				Find(&graphs)
+
 			if res.Error != nil {
 				return res.Error
 			}
@@ -177,32 +178,12 @@ func (s *Service) ListGraph(c context.Context, r *storage.ListGraphRequest) (*st
 	}, nil
 }
 
-func (s *Service) StoreGeneric(c context.Context, model interface{}) error {
-	err := s.db.
-		Session(&gorm.Session{Context: c}).
-		Transaction(func(tx *gorm.DB) error {
-			//todo change to use ProjectId
-			res := tx.FirstOrCreate(model)
-
-			if res.Error != nil {
-				return res.Error
-			}
-			return nil
-		})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (s *Service) DeleteGeneric(c context.Context, req *storage.DeleteRequest, model interface{}) (*storage.DeleteResponse, error) {
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", req.ProjectID, req.ID).
+				Where("project_id = ? and id = ?", req.ProjectId, req.Id).
 				Delete(model)
 
 			if res.Error != nil {

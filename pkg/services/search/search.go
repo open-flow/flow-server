@@ -40,7 +40,7 @@ func (s *Service) FindActive(ctx context.Context, req *search.FindActiveRequest)
 
 		var graphIds = make([]uint, len(cards))
 		for i, card := range cards {
-			graphIds[i] = card.GraphID
+			graphIds[i] = card.GraphId
 		}
 
 		res = tx.Where("id in ?", graphIds).
@@ -60,20 +60,20 @@ func (s *Service) FindActive(ctx context.Context, req *search.FindActiveRequest)
 
 	graphMap := make(map[uint]*graph.DBGraph)
 	for _, g := range graphs {
-		graphMap[g.ID] = g
+		graphMap[g.Id] = g
 	}
 
 	cardsMap := make(map[uint][]*graph.DBEventCard)
 	for _, c := range cards {
-		slice, _ := cardsMap[c.GraphID]
-		cardsMap[c.GraphID] = append(slice, c)
+		slice, _ := cardsMap[c.GraphId]
+		cardsMap[c.GraphId] = append(slice, c)
 	}
 
 	var activeGraphs []*search.ActiveGraph
 	for _, g := range graphMap {
 		active := &search.ActiveGraph{
 			Graph:  g,
-			Active: cardsMap[g.ID],
+			Active: cardsMap[g.Id],
 		}
 		activeGraphs = append(activeGraphs, active)
 	}

@@ -5,9 +5,10 @@ import (
 	executionDto "autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
 	registryDto "autoflow/pkg/entities/registry"
+	"autoflow/pkg/http"
 	"autoflow/pkg/infra"
 	"autoflow/pkg/services/batch"
-	"autoflow/pkg/services/execution"
+	"autoflow/pkg/services/callback"
 	"autoflow/pkg/services/registry"
 	"autoflow/pkg/services/registry/static"
 	"autoflow/pkg/services/schedule"
@@ -24,7 +25,7 @@ var serve = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		app := fx.New(
 			Provide(),
-			fx.Invoke(infra.NewGin, static.HttpEndpointStaticConfig),
+			fx.Invoke(http.NewController, static.HttpEndpointStaticConfig),
 		)
 		app.Run()
 	},
@@ -76,8 +77,8 @@ func Provide() fx.Option {
 		storage.New,
 		search.New,
 		schedule.New,
-		execution.NewExecuteService,
-		infra.NewGin,
+		callback.New,
+		http.NewController,
 		infra.NewConfig,
 		infra.NewGorm,
 		static.HttpEndpointStaticConfig,

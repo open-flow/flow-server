@@ -26,9 +26,9 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 
 	idGraph := graph.IDGraph{
 		IDProject: graph.IDProject{
-			ProjectID: r.ProjectID,
+			ProjectId: r.ProjectId,
 		},
-		GraphID: r.ID,
+		GraphId: r.Id,
 	}
 
 	for i, c := range r.Cards {
@@ -62,7 +62,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 		}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", r.ProjectID, r.ID).
+				Where("project_id = ? and id = ?", r.ProjectId, r.Id).
 				First(g)
 
 			if res.Error != nil {
@@ -108,8 +108,8 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.Where(
 				"project_id = ? and graph_id = ? and id in ?",
-				r.ProjectID,
-				r.ID,
+				r.ProjectId,
+				r.Id,
 				r.Connections,
 			).Delete(&graph.DBConnection{})
 			if res.Error != nil {
@@ -119,8 +119,8 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 			res = tx.
 				Where(
 					"project_id = ? and graph_id = ? and id in ?",
-					r.ProjectID,
-					r.ID,
+					r.ProjectId,
+					r.Id,
 					r.Cards,
 				).Delete(&graph.DBEventCard{})
 			if res.Error != nil {
@@ -130,8 +130,8 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 			res = tx.
 				Where(
 					"project_id = ? and graph_id = ? and id in ?",
-					r.ProjectID,
-					r.ID,
+					r.ProjectId,
+					r.Id,
 					r.Nodes,
 				).Delete(&graph.DBNode{})
 			if res.Error != nil {

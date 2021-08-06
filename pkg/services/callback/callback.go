@@ -1,4 +1,4 @@
-package execution
+package callback
 
 import (
 	"autoflow/pkg/entities/execution"
@@ -11,21 +11,21 @@ import (
 	"time"
 )
 
-type ExecuteService struct {
+type Service struct {
 	search    *search.Service
 	scheduler *schedule.Service
 	logger    *zap.Logger
 }
 
-func NewExecuteService(search *search.Service, scheduler *schedule.Service, logger *zap.Logger) *ExecuteService {
-	return &ExecuteService{
+func New(search *search.Service, scheduler *schedule.Service, logger *zap.Logger) *Service {
+	return &Service{
 		search:    search,
 		scheduler: scheduler,
-		logger:    logger.With(zap.String("service", "ExecuteService")),
+		logger:    logger.With(zap.String("service", "callback")),
 	}
 }
 
-func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.Request) (*execution.Response, error) {
+func (s *Service) Call(ctx context.Context, req *execution.Request) (*execution.Response, error) {
 	active, err := s.search.FindActive(ctx, &searchDto.FindActiveRequest{
 		DataEvent: req.Event,
 	})

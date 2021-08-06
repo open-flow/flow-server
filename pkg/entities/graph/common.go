@@ -7,10 +7,10 @@ type DataUI struct {
 
 type IDGraph struct {
 	IDProject
-	GraphID uint `gorm:"index" json:"graphId,omitempty"`
+	GraphId uint `gorm:"index" json:"graphId,omitempty"`
 }
 
 type IDProject struct {
-	ProjectID uint `json:"projectId,omitempty"`
-	ID        uint `gorm:"primaryKey" json:"id,omitempty"`
+	ProjectId uint `json:"projectId,omitempty" form:"projectId"`
+	Id        uint `gorm:"primaryKey" json:"id,omitempty" form:"id"`
 }

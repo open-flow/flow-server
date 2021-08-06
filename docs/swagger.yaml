@@ -1,0 +1,597 @@
+definitions:
+  batch.DeleteRequest:
+    properties:
+      cards:
+        items:
+          type: integer
+        type: array
+      connections:
+        items:
+          type: integer
+        type: array
+      graphId:
+        type: integer
+      id:
+        type: integer
+      nodes:
+        items:
+          type: integer
+        type: array
+      projectId:
+        type: integer
+    type: object
+  batch.DeleteResponse:
+    type: object
+  batch.SaveRequest:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/graph.DBEventCard'
+        type: array
+      connections:
+        items:
+          $ref: '#/definitions/graph.DBConnection'
+        type: array
+      id:
+        type: integer
+      nodes:
+        items:
+          $ref: '#/definitions/graph.DBNode'
+        type: array
+      projectId:
+        type: integer
+    type: object
+  batch.SaveResponse:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/graph.DBEventCard'
+        type: array
+      connections:
+        items:
+          $ref: '#/definitions/graph.DBConnection'
+        type: array
+      id:
+        type: integer
+      nodes:
+        items:
+          $ref: '#/definitions/graph.DBNode'
+        type: array
+      projectId:
+        type: integer
+    type: object
+  execution.Request:
+    properties:
+      context:
+        additionalProperties: true
+        type: object
+      event:
+        $ref: '#/definitions/graph.DataEvent'
+      raw:
+        type: object
+    type: object
+  execution.Response:
+    properties:
+      error:
+        type: string
+      noExecutions:
+        type: boolean
+      response:
+        type: object
+      scheduled:
+        type: boolean
+      timeout:
+        type: boolean
+    type: object
+  graph.DBConnection:
+    properties:
+      graphId:
+        type: integer
+      id:
+        type: integer
+      localId:
+        description: Placement
+        type: integer
+      name:
+        type: string
+      projectId:
+        type: integer
+      sourceId:
+        type: integer
+      sourcePort:
+        type: string
+      targetId:
+        type: integer
+      targetPort:
+        type: string
+      ui:
+        type: string
+    type: object
+  graph.DBEventCard:
+    properties:
+      contextId:
+        type: string
+      contextType:
+        type: string
+      graphId:
+        type: integer
+      httpVote:
+        type: integer
+      id:
+        type: integer
+      initiatorId:
+        type: string
+      initiatorType:
+        type: string
+      name:
+        type: string
+      ownerId:
+        type: string
+      ownerType:
+        type: string
+      platform:
+        type: string
+      projectId:
+        type: integer
+      resourceId:
+        type: string
+      resourceType:
+        type: string
+      slidePort:
+        type: string
+      staticId:
+        type: string
+      staticType:
+        type: string
+      targetId:
+        description: Placement
+        type: integer
+      ui:
+        type: string
+    type: object
+  graph.DBGraph:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/graph.DBEventCard'
+        type: array
+      connections:
+        items:
+          $ref: '#/definitions/graph.DBConnection'
+        type: array
+      counter:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      nodes:
+        items:
+          $ref: '#/definitions/graph.DBNode'
+        type: array
+      projectId:
+        type: integer
+      ui:
+        type: string
+    type: object
+  graph.DBNode:
+    properties:
+      arguments:
+        type: string
+      function:
+        type: string
+      graphId:
+        type: integer
+      id:
+        type: integer
+      localId:
+        description: Placement
+        type: integer
+      module:
+        type: string
+      name:
+        type: string
+      projectId:
+        type: integer
+      type:
+        description: Invocation
+        type: string
+      ui:
+        type: string
+    type: object
+  graph.DataEvent:
+    properties:
+      contextId:
+        type: string
+      contextType:
+        type: string
+      initiatorId:
+        type: string
+      initiatorType:
+        type: string
+      ownerId:
+        type: string
+      ownerType:
+        type: string
+      platform:
+        type: string
+      resourceId:
+        type: string
+      resourceType:
+        type: string
+      staticId:
+        type: string
+      staticType:
+        type: string
+    type: object
+  search.ActiveGraph:
+    properties:
+      active:
+        items:
+          $ref: '#/definitions/graph.DBEventCard'
+        type: array
+      graph:
+        $ref: '#/definitions/graph.DBGraph'
+    type: object
+  search.FindActiveRequest:
+    properties:
+      contextId:
+        type: string
+      contextType:
+        type: string
+      initiatorId:
+        type: string
+      initiatorType:
+        type: string
+      ownerId:
+        type: string
+      ownerType:
+        type: string
+      platform:
+        type: string
+      resourceId:
+        type: string
+      resourceType:
+        type: string
+      staticId:
+        type: string
+      staticType:
+        type: string
+    type: object
+  search.FindActiveResponse:
+    properties:
+      graphs:
+        items:
+          $ref: '#/definitions/search.ActiveGraph'
+        type: array
+    type: object
+  storage.DeleteRequest:
+    properties:
+      id:
+        type: integer
+      projectId:
+        type: integer
+    type: object
+  storage.DeleteResponse:
+    type: object
+  storage.GetGraphRequest:
+    properties:
+      id:
+        type: integer
+      projectId:
+        type: integer
+    type: object
+  storage.GetGraphResponse:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/graph.DBEventCard'
+        type: array
+      connections:
+        items:
+          $ref: '#/definitions/graph.DBConnection'
+        type: array
+      counter:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      nodes:
+        items:
+          $ref: '#/definitions/graph.DBNode'
+        type: array
+      projectId:
+        type: integer
+      ui:
+        type: string
+    type: object
+  storage.ListGraphResponse:
+    properties:
+      graphs:
+        items:
+          $ref: '#/definitions/graph.DBGraph'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Flow server
+  version: "1.0"
+paths:
+  /batch:
+    delete:
+      consumes:
+      - application/json
+      operationId: BatchDelete
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/batch.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/batch.DeleteResponse'
+      summary: Save all nodes, connections and event cards
+    post:
+      consumes:
+      - application/json
+      operationId: BatchSave
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/batch.SaveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/batch.SaveResponse'
+      summary: Save all nodes, connections and event cards
+  /call:
+    post:
+      consumes:
+      - application/json
+      operationId: Call
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/execution.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/execution.Response'
+      summary: Execute callback
+  /connection:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteConnection
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/storage.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.DeleteResponse'
+      summary: Save all nodes, connections and event cards
+    post:
+      consumes:
+      - application/json
+      operationId: SaveConnection
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/graph.DBConnection'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graph.DBConnection'
+      summary: Save all nodes, connections and event cards
+  /event-card:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteEventCard
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/storage.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.DeleteResponse'
+      summary: Save all nodes, connections and event cards
+    post:
+      consumes:
+      - application/json
+      operationId: SaveEventCard
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/graph.DBEventCard'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graph.DBEventCard'
+      summary: Save all nodes, connections and event cards
+  /find-active:
+    post:
+      consumes:
+      - application/json
+      operationId: FindActive
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/search.FindActiveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/search.FindActiveResponse'
+      summary: Save all nodes, connections and event cards
+  /graph:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteGraph
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/storage.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.DeleteResponse'
+      summary: Save all nodes, connections and event cards
+    get:
+      consumes:
+      - application/json
+      operationId: GetGraph
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/storage.GetGraphRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.GetGraphResponse'
+      summary: Get graph with nodes, connections and event cards
+    post:
+      consumes:
+      - application/json
+      operationId: SaveGraph
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/graph.DBGraph'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graph.DBGraph'
+      summary: Save all nodes, connections and event cards
+  /list-graphs:
+    get:
+      consumes:
+      - application/json
+      operationId: ListGraph
+      parameters:
+      - description: project ids
+        in: query
+        items:
+          type: integer
+        name: projectId
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.ListGraphResponse'
+      summary: List graphs
+  /node:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteNode
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/storage.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/storage.DeleteResponse'
+      summary: Save all nodes, connections and event cards
+    post:
+      consumes:
+      - application/json
+      operationId: SaveNode
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/graph.DBNode'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/graph.DBNode'
+      summary: Save all nodes, connections and event cards
+swagger: "2.0"
