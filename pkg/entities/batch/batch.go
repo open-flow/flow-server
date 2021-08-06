@@ -5,8 +5,7 @@ import (
 )
 
 type SaveRequest struct {
-	ProjectID uint
-	ID        uint
+	graph.IDGraph
 
 	Nodes       []graph.DataNode
 	Cards       []graph.DataEventCard
@@ -14,8 +13,7 @@ type SaveRequest struct {
 }
 
 type SaveResponse struct {
-	ProjectID uint
-	ID        uint
+	graph.IDGraph
 
 	Nodes       []*graph.DBNode
 	Cards       []*graph.DBEventCard
@@ -23,8 +21,7 @@ type SaveResponse struct {
 }
 
 type DeleteRequest struct {
-	ProjectID uint
-	ID        uint
+	graph.IDGraph
 
 	Nodes       []uint64
 	Cards       []uint64

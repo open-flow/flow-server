@@ -79,8 +79,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 	}
 
 	return &batch.SaveResponse{
-		ProjectID:   r.ProjectID,
-		ID:          r.ID,
+		IDGraph:     r.IDGraph,
 		Nodes:       nodes,
 		Cards:       cards,
 		Connections: connections,

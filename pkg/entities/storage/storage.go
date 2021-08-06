@@ -3,16 +3,14 @@ package storage
 import "autoflow/pkg/entities/graph"
 
 type DeleteRequest struct {
-	ProjectID uint
-	ID        uint
+	graph.IDGraph
 }
 
 type DeleteResponse struct {
 }
 
 type GetGraphRequest struct {
-	ProjectID uint
-	ID        uint
+	graph.IDGraph
 }
 
 type GetGraphResponse struct {
