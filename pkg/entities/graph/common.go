@@ -12,5 +12,5 @@ type IDGraph struct {
 
 type IDProject struct {
 	ProjectID uint
-	ID        uint
+	ID        uint `gorm:"primaryKey"`
 }
