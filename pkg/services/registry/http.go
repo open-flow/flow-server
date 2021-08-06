@@ -1,16 +1,16 @@
 package registry
 
 import (
-	"autoflow/pkg/dtos/execution"
-	"autoflow/pkg/dtos/registry"
-	"autoflow/pkg/errors"
+	"autoflow/pkg/entities/errors"
+	"autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/registry"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
 )
 
 type HttpEndpoint struct {
 	BaseUrl string
-	Module  *registry.EndpointDef
+	Module  *registry.ModuleDef
 	c       *resty.Client
 	logger  *zap.Logger
 }
@@ -38,7 +38,7 @@ func (h *HttpEndpoint) panicUninitialized() {
 }
 
 func (h *HttpEndpoint) Initialize() error {
-	var moduleDef registry.EndpointDef
+	var moduleDef registry.ModuleDef
 	_, err := h.c.R().SetResult(&moduleDef).Get("")
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (h *HttpEndpoint) Initialize() error {
 	return nil
 }
 
-func (h *HttpEndpoint) GetFunctions() []*registry.EndpointFunctionDef {
+func (h *HttpEndpoint) GetFunctions() []*registry.FunctionDef {
 	h.panicUninitialized()
 	return h.Module.Functions
 }

@@ -13,7 +13,6 @@ require (
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	golang.org/x/text v0.3.6 // indirect
-	gorm.io/datatypes v1.0.1
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
 )

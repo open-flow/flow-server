@@ -1,8 +1,8 @@
 package registry
 
 import (
-	"autoflow/pkg/dtos/execution"
-	"autoflow/pkg/dtos/registry"
+	execution2 "autoflow/pkg/entities/execution"
+	registry2 "autoflow/pkg/entities/registry"
 )
 
 type EndpointSource interface {
@@ -10,9 +10,9 @@ type EndpointSource interface {
 }
 
 type Endpoint interface {
-	GetFunctions() []*registry.EndpointFunctionDef
+	GetFunctions() []*registry2.FunctionDef
 	GetModule() string
-	Call(state *execution.State) (*execution.CallReturn, error)
+	Call(state *execution2.State) (*execution2.CallReturn, error)
 }
 
 type EndpointHandler interface {

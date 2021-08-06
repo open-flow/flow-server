@@ -1,28 +1,28 @@
 package registry
 
 import (
-	"autoflow/pkg/dtos/execution"
+	"autoflow/pkg/entities/execution"
 	"go.uber.org/zap"
 )
 
-type RegistryService struct {
+type Service struct {
 	Endpoints map[string]Endpoint
 	logger    *zap.Logger
 }
 
-func NewRegistryService(logger *zap.Logger) *RegistryService {
-	service := &RegistryService{
+func NewRegistryService(logger *zap.Logger) *Service {
+	service := &Service{
 		Endpoints: map[string]Endpoint{},
 		logger:    logger.With(zap.String("service", "RegistryService")),
 	}
 	return service
 }
 
-func (r *RegistryService) RegisterEndpoint(endpoint Endpoint) {
+func (r *Service) RegisterEndpoint(endpoint Endpoint) {
 	r.Endpoints[endpoint.GetModule()] = endpoint
 }
 
-func (r *RegistryService) Call(state *execution.State) (*execution.CallReturn, error) {
+func (r *Service) Call(state *execution.State) (*execution.CallReturn, error) {
 	module := state.Cursor.Node.Module
 	endpoint, found := r.Endpoints[module]
 	if !found {

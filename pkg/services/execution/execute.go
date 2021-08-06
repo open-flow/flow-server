@@ -1,22 +1,23 @@
 package execution
 
 import (
-	"autoflow/pkg/dtos/execution"
-	"autoflow/pkg/dtos/storage"
-	"autoflow/pkg/orm"
-	storageSvc "autoflow/pkg/services/storage"
+	"autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/graph"
+	searchDto "autoflow/pkg/entities/search"
+	"autoflow/pkg/services/schedule"
+	"autoflow/pkg/services/search"
 	"context"
 	"go.uber.org/zap"
 	"time"
 )
 
 type ExecuteService struct {
-	search    *storageSvc.SearchService
-	scheduler *ScheduleService
+	search    *search.Service
+	scheduler *schedule.Service
 	logger    *zap.Logger
 }
 
-func NewExecuteService(search *storageSvc.SearchService, scheduler *ScheduleService, logger *zap.Logger) *ExecuteService {
+func NewExecuteService(search *search.Service, scheduler *schedule.Service, logger *zap.Logger) *ExecuteService {
 	return &ExecuteService{
 		search:    search,
 		scheduler: scheduler,
@@ -24,19 +25,22 @@ func NewExecuteService(search *storageSvc.SearchService, scheduler *ScheduleServ
 	}
 }
 
-func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.RequestExecution) (*execution.ResponseExecution, error) {
-	active, err := s.search.FindActiveGraph(ctx, req.Event)
+func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.Request) (*execution.Response, error) {
+	active, err := s.search.FindActive(ctx, &searchDto.FindActiveRequest{
+		DataEvent: req.Event,
+	})
+
 	if err != nil {
 		s.logger.Error("error finding graph", zap.Error(err))
 		return nil, err
 	}
 
 	var currentVote uint64 = 0
-	var responseActive *storage.ActiveGraph
-	var responseActiveCard *orm.EventCard
+	var responseActive *searchDto.ActiveGraph
+	var responseActiveCard *graph.DBEventCard
 
 	for _, ag := range active.Graphs {
-		for _, ac := range ag.ActiveCards {
+		for _, ac := range ag.Active {
 			if ac.HttpVote > currentVote {
 				responseActive = ag
 				responseActiveCard = ac
@@ -45,7 +49,7 @@ func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.R
 	}
 
 	for _, ag := range active.Graphs {
-		for _, ac := range ag.ActiveCards {
+		for _, ac := range ag.Active {
 			if ag == responseActive && ac == responseActiveCard {
 				continue
 			}
@@ -54,16 +58,16 @@ func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.R
 	}
 
 	if responseActive != nil {
-		ch := make(chan *execution.ResponseExecution)
+		ch := make(chan *execution.Response)
 		s.scheduler.Schedule(req, responseActive, responseActiveCard, ch)
 		select {
 		case <-ctx.Done():
-			return &execution.ResponseExecution{
+			return &execution.Response{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
 		case <-time.After(30 * time.Second):
-			return &execution.ResponseExecution{
+			return &execution.Response{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
@@ -72,7 +76,7 @@ func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.R
 		}
 	}
 
-	return &execution.ResponseExecution{
+	return &execution.Response{
 		Scheduled: true,
 	}, nil
 }

@@ -1,22 +1,22 @@
 package static
 
 import (
-	"autoflow/pkg/services/registry"
+	registry2 "autoflow/pkg/services/registry"
 	"context"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
-type StaticHttpConfig struct {
+type HttpConfig struct {
 	Endpoints []struct {
 		Url    string
 		Module string
 	}
 }
 
-func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry.RegistryService, logger *zap.Logger) (*StaticHttpConfig, error) {
-	config := &StaticHttpConfig{}
+func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry2.Service, logger *zap.Logger) (*HttpConfig, error) {
+	config := &HttpConfig{}
 	err := viper.Unmarshal(config)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry.RegistryService, lo
 	ls.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			for _, e := range config.Endpoints {
-				endpoint := registry.NewHttpEndpoint(e.Url, e.Module, logger)
+				endpoint := registry2.NewHttpEndpoint(e.Url, e.Module, logger)
 				err := endpoint.Initialize()
 				if err != nil {
 					return err

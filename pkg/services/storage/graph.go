@@ -1,31 +1,31 @@
 package storage
 
 import (
-	"autoflow/pkg/dtos/storage"
-	"autoflow/pkg/orm"
+	"autoflow/pkg/entities/graph"
+	"autoflow/pkg/entities/storage"
 	"context"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-type GraphService struct {
+type Service struct {
 	db *gorm.DB
 }
 
-func NewGraphService(db *gorm.DB) *GraphService {
-	return &GraphService{
+func New(db *gorm.DB) *Service {
+	return &Service{
 		db: db,
 	}
 }
 
-func (s *GraphService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Graph, error) {
-	var persisted orm.Graph
+func (s *Service) SaveGraph(c context.Context, data *graph.DBGraph) (*graph.DBGraph, error) {
+	var persisted graph.DBGraph
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", graph.ProjectId, graph.Id).
-				Assign(graph).
+				Where("project_id = ? and id = ?", data.ProjectID, data.ID).
+				Assign(data).
 				FirstOrCreate(&persisted)
 
 			if res.Error != nil {
@@ -41,14 +41,14 @@ func (s *GraphService) SaveGraph(c context.Context, graph *orm.Graph) (*orm.Grap
 	return &persisted, nil
 }
 
-func (s *GraphService) SaveNode(c context.Context, node *orm.Node) (*orm.Node, error) {
-	var persisted orm.Node
+func (s *Service) SaveNode(c context.Context, node *graph.DBNode) (*graph.DBNode, error) {
+	var persisted graph.DBNode
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", node.ProjectId, node.Id).
+				Where("project_id = ? and id = ?", node.ProjectID, node.ID).
 				Assign(node).
 				FirstOrCreate(&persisted)
 
@@ -65,14 +65,14 @@ func (s *GraphService) SaveNode(c context.Context, node *orm.Node) (*orm.Node, e
 	return &persisted, nil
 }
 
-func (s *GraphService) SaveEventCard(c context.Context, card *orm.EventCard) (*orm.EventCard, error) {
-	var persisted orm.EventCard
+func (s *Service) SaveEventCard(c context.Context, card *graph.DBEventCard) (*graph.DBEventCard, error) {
+	var persisted graph.DBEventCard
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", card.ProjectId, card.Id).
+				Where("project_id = ? and id = ?", card.ProjectID, card.ID).
 				Assign(card).
 				FirstOrCreate(&persisted)
 
@@ -89,14 +89,14 @@ func (s *GraphService) SaveEventCard(c context.Context, card *orm.EventCard) (*o
 	return &persisted, nil
 }
 
-func (s *GraphService) SaveConnection(c context.Context, connection *orm.Connection) (*orm.Connection, error) {
-	var persisted orm.Connection
+func (s *Service) SaveConnection(c context.Context, connection *graph.DBConnection) (*graph.DBConnection, error) {
+	var persisted graph.DBConnection
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", connection.ProjectId, connection.Id).
+				Where("project_id = ? and id = ?", connection.ProjectID, connection.ID).
 				Assign(connection).
 				FirstOrCreate(&persisted)
 
@@ -113,32 +113,32 @@ func (s *GraphService) SaveConnection(c context.Context, connection *orm.Connect
 	return &persisted, nil
 }
 
-func (s *GraphService) DeleteGraph(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
-	return s.DeleteGeneric(c, request, &orm.Graph{})
+func (s *Service) DeleteGraph(c context.Context, request *storage.DeleteRequest) (*storage.DeleteResponse, error) {
+	return s.DeleteGeneric(c, request, &graph.DBGraph{})
 }
 
-func (s *GraphService) DeleteNode(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
-	return s.DeleteGeneric(c, request, &orm.Node{})
+func (s *Service) DeleteNode(c context.Context, request *storage.DeleteRequest) (*storage.DeleteResponse, error) {
+	return s.DeleteGeneric(c, request, &graph.DBNode{})
 }
 
-func (s *GraphService) DeleteEventCard(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
-	return s.DeleteGeneric(c, request, &orm.EventCard{})
+func (s *Service) DeleteEventCard(c context.Context, request *storage.DeleteRequest) (*storage.DeleteResponse, error) {
+	return s.DeleteGeneric(c, request, &graph.DBEventCard{})
 }
 
-func (s *GraphService) DeleteConnection(c context.Context, request *storage.RequestDelete) (*storage.ResponseDelete, error) {
-	return s.DeleteGeneric(c, request, &orm.Connection{})
+func (s *Service) DeleteConnection(c context.Context, request *storage.DeleteRequest) (*storage.DeleteResponse, error) {
+	return s.DeleteGeneric(c, request, &graph.DBConnection{})
 }
 
-func (s *GraphService) GetFullGraph(c context.Context, r *storage.RequestGetFullGraph) (*orm.Graph, error) {
-	var graph = &orm.Graph{}
+func (s *Service) GetFullGraph(c context.Context, r *storage.GetGraphRequest) (*graph.DBGraph, error) {
+	var g = &graph.DBGraph{}
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", r.ProjectId, r.Id).
+				Where("project_id = ? and id = ?", r.ProjectID, r.ID).
 				Preload(clause.Associations).
-				First(graph)
+				First(g)
 
 			if res.Error != nil {
 				return res.Error
@@ -150,19 +150,18 @@ func (s *GraphService) GetFullGraph(c context.Context, r *storage.RequestGetFull
 		return nil, err
 	}
 
-	return graph, nil
+	return g, nil
 }
 
-func (s *GraphService) ListGraph(c context.Context, r *storage.RequestListGraph) (*storage.ResponseListGraph, error) {
-	var graphs []*orm.Graph
+func (s *Service) ListGraph(c context.Context, r *storage.ListGraphRequest) (*storage.ListGraphResponse, error) {
+	var graphs []*graph.DBGraph
 
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id in ?", r.ProjectIds).
+				Where("project_id in ?", r.ProjectIDs).
 				Find(&graphs)
-
 			if res.Error != nil {
 				return res.Error
 			}
@@ -173,16 +172,16 @@ func (s *GraphService) ListGraph(c context.Context, r *storage.RequestListGraph)
 		return nil, err
 	}
 
-	return &storage.ResponseListGraph{
+	return &storage.ListGraphResponse{
 		Graphs: graphs,
 	}, nil
 }
 
-func (s *GraphService) StoreGeneric(c context.Context, model interface{}) error {
+func (s *Service) StoreGeneric(c context.Context, model interface{}) error {
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
-			//todo change to use projectID
+			//todo change to use ProjectId
 			res := tx.FirstOrCreate(model)
 
 			if res.Error != nil {
@@ -198,12 +197,12 @@ func (s *GraphService) StoreGeneric(c context.Context, model interface{}) error 
 	return nil
 }
 
-func (s *GraphService) DeleteGeneric(c context.Context, req *storage.RequestDelete, model interface{}) (*storage.ResponseDelete, error) {
+func (s *Service) DeleteGeneric(c context.Context, req *storage.DeleteRequest, model interface{}) (*storage.DeleteResponse, error) {
 	err := s.db.
 		Session(&gorm.Session{Context: c}).
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
-				Where("project_id = ? and id = ?", req.ProjectId, req.Id).
+				Where("project_id = ? and id = ?", req.ProjectID, req.ID).
 				Delete(model)
 
 			if res.Error != nil {
@@ -216,5 +215,5 @@ func (s *GraphService) DeleteGeneric(c context.Context, req *storage.RequestDele
 		return nil, err
 	}
 
-	return &storage.ResponseDelete{}, nil
+	return &storage.DeleteResponse{}, nil
 }

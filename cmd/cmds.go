@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"autoflow/pkg/infra"
+	"autoflow/pkg/services/batch"
 	"autoflow/pkg/services/execution"
-	infra2 "autoflow/pkg/services/infra"
+	"autoflow/pkg/services/random"
 	"autoflow/pkg/services/registry"
 	"autoflow/pkg/services/registry/static"
+	"autoflow/pkg/services/schedule"
+	"autoflow/pkg/services/search"
 	"autoflow/pkg/services/storage"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
@@ -14,7 +18,7 @@ var randomGraph = &cobra.Command{
 	Use:   "random-graph",
 	Short: "Generate and store random graph",
 	Run: func(cmd *cobra.Command, args []string) {
-		var random *storage.RandomService
+		var random *random.Service
 		fx.New(
 			Provide(),
 			fx.Populate(&random),
@@ -32,7 +36,7 @@ var serve = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		app := fx.New(
 			Provide(),
-			fx.Invoke(infra2.NewGin, static.HttpEndpointStaticConfig),
+			fx.Invoke(infra.NewGin, static.HttpEndpointStaticConfig),
 		)
 		app.Run()
 	},
@@ -40,18 +44,18 @@ var serve = &cobra.Command{
 
 func Provide() fx.Option {
 	return fx.Provide(
-		storage.NewBatchService,
-		storage.NewGraphService,
-		storage.NewRandomService,
-		storage.NewSearchService,
-		execution.NewScheduleService,
+		batch.New,
+		storage.New,
+		random.New,
+		search.New,
+		schedule.New,
 		execution.NewExecuteService,
-		infra2.NewGin,
-		infra2.NewConfig,
-		infra2.NewGorm,
+		infra.NewGin,
+		infra.NewConfig,
+		infra.NewGorm,
 		static.HttpEndpointStaticConfig,
 		registry.NewRegistryService,
-		infra2.NewLogger,
-		infra2.NewSugaredLogger,
+		infra.NewLogger,
+		infra.NewSugaredLogger,
 	)
 }
