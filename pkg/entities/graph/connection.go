@@ -8,11 +8,11 @@ type DBConnection struct {
 
 type DataConnection struct {
 	//Placement
-	LocalId uint
+	LocalID uint `json:"localId"`
 
-	SourcePort string
-	SourceId   uint
+	SourcePort string `json:"sourcePort"`
+	SourceID   uint   `json:"sourceId"`
 
-	TargetPort string
-	TargetId   uint
+	TargetPort string `json:"targetPort"`
+	TargetId   uint   `json:"targetId"`
 }

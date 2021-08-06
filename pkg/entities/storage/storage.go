@@ -18,9 +18,9 @@ type GetGraphResponse struct {
 }
 
 type ListGraphRequest struct {
-	ProjectIDs []uint64
+	ProjectIDs []uint64 `json:"projectIDs"`
 }
 
 type ListGraphResponse struct {
-	Graphs []*graph.DBGraph
+	Graphs []*graph.DBGraph `json:"graphs"`
 }

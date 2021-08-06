@@ -5,9 +5,9 @@ import (
 )
 
 type Request struct {
-	Event      graph.DataEvent        `json:"event"`
-	Context    map[string]interface{} `json:"context"`
-	RawRequest interface{}            `json:"raw"`
+	Event      graph.DataEvent        `json:"event,omitempty"`
+	Context    map[string]interface{} `json:"context,omitempty"`
+	RawRequest interface{}            `json:"raw,omitempty"`
 }
 
 type Response struct {

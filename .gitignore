@@ -1,2 +1,5 @@
 .idea/
+ts/*
+!ts/.gitkeep
+models.ts
 config.yaml

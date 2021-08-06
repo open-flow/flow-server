@@ -2,7 +2,7 @@ package batch
 
 import (
 	"autoflow/pkg/entities/batch"
-	graph2 "autoflow/pkg/entities/graph"
+	"autoflow/pkg/entities/graph"
 	"context"
 	"gorm.io/gorm"
 )
@@ -18,27 +18,40 @@ func New(db *gorm.DB) *Service {
 }
 
 func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveResponse, error) {
-	graph := &graph2.DBGraph{}
+	g := &graph.DBGraph{}
 
-	cards := make([]*graph2.DBEventCard, len(r.Cards))
-	nodes := make([]*graph2.DBNode, len(r.Nodes))
-	connections := make([]*graph2.DBConnection, len(r.Connections))
+	cards := make([]*graph.DBEventCard, len(r.Cards))
+	nodes := make([]*graph.DBNode, len(r.Nodes))
+	connections := make([]*graph.DBConnection, len(r.Connections))
+
+	idGraph := graph.IDGraph{
+		IDProject: graph.IDProject{
+			ProjectID: r.ProjectID,
+		},
+		GraphID: r.ID,
+	}
 
 	for i, c := range r.Cards {
-		cards[i] = &graph2.DBEventCard{
-			DataEventCard: c,
+		cards[i] = &graph.DBEventCard{
+			IDGraph:       idGraph,
+			DataEventCard: c.DataEventCard,
+			DataUI:        c.DataUI,
 		}
 	}
 
 	for i, c := range r.Nodes {
-		nodes[i] = &graph2.DBNode{
-			DataNode: c,
+		nodes[i] = &graph.DBNode{
+			IDGraph:  idGraph,
+			DataNode: c.DataNode,
+			DataUI:   c.DataUI,
 		}
 	}
 
 	for i, c := range r.Connections {
-		connections[i] = &graph2.DBConnection{
-			DataConnection: c,
+		connections[i] = &graph.DBConnection{
+			IDGraph:        idGraph,
+			DataConnection: c.DataConnection,
+			DataUI:         c.DataUI,
 		}
 	}
 
@@ -50,7 +63,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 		Transaction(func(tx *gorm.DB) error {
 			res := tx.
 				Where("project_id = ? and id = ?", r.ProjectID, r.ID).
-				First(graph)
+				First(g)
 
 			if res.Error != nil {
 				return res.Error
@@ -79,7 +92,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 	}
 
 	return &batch.SaveResponse{
-		IDGraph:     r.IDGraph,
+		IDProject:   r.IDProject,
 		Nodes:       nodes,
 		Cards:       cards,
 		Connections: connections,
@@ -98,7 +111,7 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 				r.ProjectID,
 				r.ID,
 				r.Connections,
-			).Delete(&graph2.DBConnection{})
+			).Delete(&graph.DBConnection{})
 			if res.Error != nil {
 				return res.Error
 			}
@@ -109,7 +122,7 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 					r.ProjectID,
 					r.ID,
 					r.Cards,
-				).Delete(&graph2.DBEventCard{})
+				).Delete(&graph.DBEventCard{})
 			if res.Error != nil {
 				return res.Error
 			}
@@ -120,7 +133,7 @@ func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) (*batch.De
 					r.ProjectID,
 					r.ID,
 					r.Nodes,
-				).Delete(&graph2.DBNode{})
+				).Delete(&graph.DBNode{})
 			if res.Error != nil {
 				return res.Error
 			}

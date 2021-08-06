@@ -1,16 +1,16 @@
 package graph
 
 type DBGraph struct {
-	IDGraph
+	IDProject
 
 	DataUI
 	DataGraph
 
-	Nodes       []DBNode       `gorm:"foreignKey:ID;references:GraphID;constraint:OnDelete:CASCADE;"`
-	Cards       []DBEventCard  `gorm:"foreignKey:ID;references:GraphID;constraint:OnDelete:CASCADE;"`
-	Connections []DBConnection `gorm:"foreignKey:ID;references:GraphID;constraint:OnDelete:CASCADE;"`
+	Nodes       []DBNode       `gorm:"foreignKey:GraphID;references:ID;constraint:OnDelete:CASCADE;"`
+	Cards       []DBEventCard  `gorm:"foreignKey:GraphID;references:ID;constraint:OnDelete:CASCADE;"`
+	Connections []DBConnection `gorm:"foreignKey:GraphID;references:ID;constraint:OnDelete:CASCADE;"`
 }
 
 type DataGraph struct {
-	Counter uint64
+	Counter uint `json:"counter"`
 }

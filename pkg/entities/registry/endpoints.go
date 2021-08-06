@@ -1,10 +1,10 @@
 package registry
 
 type ModuleDef struct {
-	Module    string
-	Functions []*FunctionDef
+	Module    string         `json:"module"`
+	Functions []*FunctionDef `json:"functions"`
 }
 
 type FunctionDef struct {
-	Function string
+	Function string `json:"function"`
 }

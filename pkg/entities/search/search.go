@@ -7,10 +7,10 @@ type FindActiveRequest struct {
 }
 
 type FindActiveResponse struct {
-	Graphs []*ActiveGraph
+	Graphs []*ActiveGraph `json:"graphs"`
 }
 
 type ActiveGraph struct {
-	Graph  *graph.DBGraph
-	Active []*graph.DBEventCard
+	Graph  *graph.DBGraph       `json:"graph"`
+	Active []*graph.DBEventCard `json:"active"`
 }

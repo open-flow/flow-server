@@ -4,16 +4,16 @@ import (
 	executionDto "autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
 	"autoflow/pkg/entities/search"
-	registry2 "autoflow/pkg/services/registry"
+	"autoflow/pkg/services/registry"
 	"go.uber.org/zap"
 )
 
 type Service struct {
-	Registry *registry2.Service
+	Registry *registry.Service
 	logger   *zap.Logger
 }
 
-func New(regSvc *registry2.Service, logger *zap.Logger) *Service {
+func New(regSvc *registry.Service, logger *zap.Logger) *Service {
 	return &Service{
 		Registry: regSvc,
 		logger:   logger.With(zap.String("service", "ScheduleService")),

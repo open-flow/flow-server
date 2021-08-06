@@ -8,11 +8,11 @@ type DBNode struct {
 
 type DataNode struct {
 	//Placement
-	LocalId uint
+	LocalId uint `json:"localId"`
 
 	//Invocation
-	Type      string
-	Module    string
-	Function  string
-	Arguments string
+	Type      string `json:"type"`
+	Module    string `json:"module"`
+	Function  string `json:"function"`
+	Arguments string `json:"arguments"`
 }

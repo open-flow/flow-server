@@ -18,10 +18,10 @@ func (g *DBGraph) FindConnectedNodes(localId uint, slidePort string) []DataConne
 	var nodes []DataConnection
 
 	for _, c := range g.Connections {
-		if c.SourceId == localId && c.SourcePort == slidePort {
+		if c.SourceID == localId && c.SourcePort == slidePort {
 			nodes = append(nodes, DataConnection{
 				SourcePort: c.SourcePort,
-				SourceId:   c.SourceId,
+				SourceID:   c.SourceID,
 				TargetPort: c.TargetPort,
 				TargetId:   c.TargetId,
 			})

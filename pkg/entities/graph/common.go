@@ -1,16 +1,16 @@
 package graph
 
 type DataUI struct {
-	Name string
-	Ui   string
+	Name string `json:"name,omitempty"`
+	Ui   string `json:"ui,omitempty"`
 }
 
 type IDGraph struct {
 	IDProject
-	GraphID uint `gorm:"index"`
+	GraphID uint `gorm:"index" json:"graphId,omitempty"`
 }
 
 type IDProject struct {
-	ProjectID uint
-	ID        uint `gorm:"primaryKey"`
+	ProjectID uint `json:"projectId,omitempty"`
+	ID        uint `gorm:"primaryKey" json:"id,omitempty"`
 }

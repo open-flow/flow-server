@@ -5,27 +5,27 @@ import (
 )
 
 type SaveRequest struct {
-	graph.IDGraph
+	graph.IDProject
 
-	Nodes       []graph.DataNode
-	Cards       []graph.DataEventCard
-	Connections []graph.DataConnection
+	Nodes       []graph.DBNode       `json:"nodes"`
+	Cards       []graph.DBEventCard  `json:"cards"`
+	Connections []graph.DBConnection `json:"connections"`
 }
 
 type SaveResponse struct {
-	graph.IDGraph
+	graph.IDProject
 
-	Nodes       []*graph.DBNode
-	Cards       []*graph.DBEventCard
-	Connections []*graph.DBConnection
+	Nodes       []*graph.DBNode       `json:"nodes"`
+	Cards       []*graph.DBEventCard  `json:"cards"`
+	Connections []*graph.DBConnection `json:"connections"`
 }
 
 type DeleteRequest struct {
 	graph.IDGraph
 
-	Nodes       []uint64
-	Cards       []uint64
-	Connections []uint64
+	Nodes       []uint64 `json:"nodes"`
+	Cards       []uint64 `json:"cards"`
+	Connections []uint64 `json:"connections"`
 }
 
 type DeleteResponse struct {

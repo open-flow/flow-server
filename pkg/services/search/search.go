@@ -30,9 +30,10 @@ func (s *Service) FindActive(ctx context.Context, req *search.FindActiveRequest)
 	err := s.db.Session(
 		&gorm.Session{Context: ctx},
 	).Transaction(func(tx *gorm.DB) error {
-		res := tx.
+		res := tx.Model(&graph.DBEventCard{}).
 			Where(req).
 			Find(&cards)
+
 		if res.Error != nil {
 			return res.Error
 		}
@@ -41,9 +42,11 @@ func (s *Service) FindActive(ctx context.Context, req *search.FindActiveRequest)
 		for i, card := range cards {
 			graphIds[i] = card.GraphID
 		}
+
 		res = tx.Where("id in ?", graphIds).
 			Preload(clause.Associations).
 			First(&graphs)
+
 		if res.Error != nil {
 			return res.Error
 		}

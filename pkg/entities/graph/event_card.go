@@ -8,30 +8,30 @@ type DBEventCard struct {
 }
 
 type DataEvent struct {
-	Platform string
+	Platform string `json:"platform,omitempty" `
 
-	OwnerType string
-	OwnerId   string
+	OwnerType string `json:"ownerType"`
+	OwnerId   string `json:"ownerId"`
 
-	ResourceType string
-	ResourceId   string
+	ResourceType string `json:"resourceType,omitempty"`
+	ResourceId   string `json:"resourceId,omitempty"`
 
-	ContextType string
-	ContextId   string
+	ContextType string `json:"contextType,omitempty"`
+	ContextId   string `json:"contextId,omitempty"`
 
-	InitiatorType string
-	InitiatorId   string
+	InitiatorType string `json:"initiatorType,omitempty"`
+	InitiatorId   string `json:"initiatorId,omitempty"`
 
-	StaticType string
-	StaticId   string
+	StaticType string `json:"staticType,omitempty"`
+	StaticId   string `json:"staticId,omitempty"`
 }
 
 type DataEventCard struct {
-	HttpVote uint
+	HttpVote uint `json:"httpVote,omitempty"`
 
 	//Placement
-	TargetId  uint
-	SlidePort string
+	TargetId  uint   `json:"targetId"`
+	SlidePort string `json:"slidePort,omitempty"`
 
 	DataEvent
 }

@@ -18,7 +18,7 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(serve)
-	rootCmd.AddCommand(randomGraph)
+	rootCmd.AddCommand(ts)
 
 	viper.SetConfigFile("config.yaml")
 	viper.SetConfigType("yaml")
