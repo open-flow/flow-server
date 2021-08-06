@@ -27,10 +27,10 @@ type DataEvent struct {
 }
 
 type DataEventCard struct {
-	HttpVote uint64
+	HttpVote uint
 
 	//Placement
-	TargetId  uint64
+	TargetId  uint
 	SlidePort string
 
 	DataEvent

@@ -1,6 +1,6 @@
 package graph
 
-func (g *DBGraph) FindNode(localId uint64) DBNode {
+func (g *DBGraph) FindNode(localId uint) DBNode {
 	for _, n := range g.Nodes {
 		if n.LocalId == localId {
 			return n
@@ -10,7 +10,7 @@ func (g *DBGraph) FindNode(localId uint64) DBNode {
 	return DBNode{}
 }
 
-func (g *DBGraph) FindConnectedNodes(localId uint64, slidePort string) []DataConnection {
+func (g *DBGraph) FindConnectedNodes(localId uint, slidePort string) []DataConnection {
 	if localId == 0 || slidePort == "" {
 		return nil
 	}

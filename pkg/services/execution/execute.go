@@ -35,7 +35,7 @@ func (s *ExecuteService) ExecuteActiveCard(ctx context.Context, req *execution.R
 		return nil, err
 	}
 
-	var currentVote uint64 = 0
+	var currentVote uint = 0
 	var responseActive *searchDto.ActiveGraph
 	var responseActiveCard *graph.DBEventCard
 

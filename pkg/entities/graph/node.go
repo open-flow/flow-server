@@ -8,7 +8,7 @@ type DBNode struct {
 
 type DataNode struct {
 	//Placement
-	LocalId uint64
+	LocalId uint
 
 	//Invocation
 	Type      string

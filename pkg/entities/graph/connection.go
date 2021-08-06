@@ -8,11 +8,11 @@ type DBConnection struct {
 
 type DataConnection struct {
 	//Placement
-	LocalId uint64
+	LocalId uint
 
 	SourcePort string
-	SourceId   uint64
+	SourceId   uint
 
 	TargetPort string
-	TargetId   uint64
+	TargetId   uint
 }
