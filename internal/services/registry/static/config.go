@@ -1,7 +1,7 @@
 package static
 
 import (
-	registry2 "autoflow/pkg/services/registry"
+	"autoflow/internal/services/registry"
 	"context"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
@@ -15,7 +15,7 @@ type HttpConfig struct {
 	}
 }
 
-func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry2.Service, logger *zap.Logger) (*HttpConfig, error) {
+func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry.Service, logger *zap.Logger) (*HttpConfig, error) {
 	config := &HttpConfig{}
 	err := viper.Unmarshal(config)
 	if err != nil {
@@ -25,11 +25,8 @@ func HttpEndpointStaticConfig(ls fx.Lifecycle, svc *registry2.Service, logger *z
 	ls.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			for _, e := range config.Endpoints {
-				endpoint := registry2.NewHttpEndpoint(e.Url, e.Module, logger)
-				err := endpoint.Initialize()
-				if err != nil {
-					return err
-				}
+				endpoint := registry.NewHttpEndpoint(e.Url, e.Module, logger)
+				endpoint.Start()
 				svc.RegisterEndpoint(endpoint)
 			}
 			return nil

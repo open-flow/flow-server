@@ -224,6 +224,29 @@ definitions:
       staticType:
         type: string
     type: object
+  module.DBModule:
+    properties:
+      id:
+        type: integer
+      module:
+        type: string
+      uri:
+        type: string
+    type: object
+  module.DeleteRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  module.DeleteResponse:
+    type: object
+  module.ListResponse:
+    properties:
+      modules:
+        items:
+          $ref: '#/definitions/module.DBModule'
+        type: array
+    type: object
   search.ActiveGraph:
     properties:
       active:
@@ -273,13 +296,6 @@ definitions:
         type: integer
     type: object
   storage.DeleteResponse:
-    type: object
-  storage.GetGraphRequest:
-    properties:
-      id:
-        type: integer
-      projectId:
-        type: integer
     type: object
   storage.GetGraphResponse:
     properties:
@@ -338,7 +354,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/batch.DeleteResponse'
-      summary: Save all nodes, connections and event cards
+      summary: deletes all Nodes, Connections and EventCards from the graph
     post:
       consumes:
       - application/json
@@ -357,7 +373,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/batch.SaveResponse'
-      summary: Save all nodes, connections and event cards
+      summary: saves new Nodes, Connections and EventCards
   /call:
     post:
       consumes:
@@ -377,7 +393,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/execution.Response'
-      summary: Execute callback
+      summary: executes callback
   /connection:
     delete:
       consumes:
@@ -397,7 +413,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.DeleteResponse'
-      summary: Save all nodes, connections and event cards
+      summary: deletes Connection
     post:
       consumes:
       - application/json
@@ -416,7 +432,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/graph.DBConnection'
-      summary: Save all nodes, connections and event cards
+      summary: saves or updates Connection
   /event-card:
     delete:
       consumes:
@@ -436,7 +452,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.DeleteResponse'
-      summary: Save all nodes, connections and event cards
+      summary: deletes EventCard
     post:
       consumes:
       - application/json
@@ -455,7 +471,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/graph.DBEventCard'
-      summary: Save all nodes, connections and event cards
+      summary: saves or updates EventCard
   /find-active:
     post:
       consumes:
@@ -475,7 +491,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/search.FindActiveResponse'
-      summary: Save all nodes, connections and event cards
+      summary: finds graphs that would activate for event
   /graph:
     delete:
       consumes:
@@ -495,18 +511,22 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.DeleteResponse'
-      summary: Save all nodes, connections and event cards
+      summary: deletes graph and all related Nodes, Connections and EventCards
     get:
       consumes:
       - application/json
       operationId: GetGraph
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: project id
+        in: query
+        name: projectId
         required: true
-        schema:
-          $ref: '#/definitions/storage.GetGraphRequest'
+        type: integer
+      - description: graph id
+        in: query
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -514,7 +534,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.GetGraphResponse'
-      summary: Get graph with nodes, connections and event cards
+      summary: gets graph with Nodes, Connections and EventCards
     post:
       consumes:
       - application/json
@@ -533,7 +553,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/graph.DBGraph'
-      summary: Save all nodes, connections and event cards
+      summary: saves or updates graph. Nodes, Connections and EventCards are ignored
   /list-graphs:
     get:
       consumes:
@@ -554,7 +574,59 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.ListGraphResponse'
-      summary: List graphs
+      summary: lists graphs
+  /list-module:
+    get:
+      consumes:
+      - application/json
+      operationId: ListModule
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/module.ListResponse'
+      summary: lists modules
+  /module:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteModule
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/module.DeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/module.DeleteResponse'
+      summary: deletes Module
+    post:
+      consumes:
+      - application/json
+      operationId: SaveModule
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/module.DBModule'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/module.DBModule'
+      summary: saves Module
   /node:
     delete:
       consumes:
@@ -574,7 +646,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/storage.DeleteResponse'
-      summary: Save all nodes, connections and event cards
+      summary: deletes Node
     post:
       consumes:
       - application/json
@@ -593,5 +665,5 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/graph.DBNode'
-      summary: Save all nodes, connections and event cards
+      summary: saves or updates node
 swagger: "2.0"

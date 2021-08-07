@@ -1,19 +1,20 @@
 package cmd
 
 import (
+	"autoflow/internal/http"
+	"autoflow/internal/infra"
+	"autoflow/internal/services/batch"
+	"autoflow/internal/services/callback"
+	"autoflow/internal/services/module"
+	"autoflow/internal/services/registry"
+	"autoflow/internal/services/registry/static"
+	"autoflow/internal/services/schedule"
+	"autoflow/internal/services/search"
+	"autoflow/internal/services/storage"
 	batchDto "autoflow/pkg/entities/batch"
 	executionDto "autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
-	registryDto "autoflow/pkg/entities/registry"
-	"autoflow/pkg/http"
-	"autoflow/pkg/infra"
-	"autoflow/pkg/services/batch"
-	"autoflow/pkg/services/callback"
-	"autoflow/pkg/services/registry"
-	"autoflow/pkg/services/registry/static"
-	"autoflow/pkg/services/schedule"
-	"autoflow/pkg/services/search"
-	"autoflow/pkg/services/storage"
+	registryDto "autoflow/pkg/entities/module"
 	"github.com/spf13/cobra"
 	"github.com/tkrajina/typescriptify-golang-structs/typescriptify"
 	"go.uber.org/fx"
@@ -78,8 +79,10 @@ func Provide() fx.Option {
 		search.New,
 		schedule.New,
 		callback.New,
+		module.New,
 		http.NewController,
 		infra.NewConfig,
+		infra.NewNats,
 		infra.NewGorm,
 		static.HttpEndpointStaticConfig,
 		registry.NewRegistryService,

@@ -2,7 +2,7 @@ package registry
 
 import (
 	"autoflow/pkg/entities/execution"
-	"autoflow/pkg/entities/registry"
+	"autoflow/pkg/entities/module"
 )
 
 type EndpointSource interface {
@@ -10,9 +10,13 @@ type EndpointSource interface {
 }
 
 type Endpoint interface {
-	GetFunctions() []*registry.FunctionDef
+	GetFunctions() []*module.FunctionDef
 	GetModule() string
 	Call(state *execution.State) (*execution.CallReturn, error)
+	SyncUri(uri string)
+	IsHealthy() bool
+	Stop()
+	Start()
 }
 
 type EndpointHandler interface {

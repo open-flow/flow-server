@@ -1,10 +1,10 @@
 package schedule
 
 import (
+	"autoflow/internal/services/registry"
 	executionDto "autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
 	"autoflow/pkg/entities/search"
-	"autoflow/pkg/services/registry"
 	"go.uber.org/zap"
 )
 

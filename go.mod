@@ -11,6 +11,8 @@ require (
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/jinzhu/copier v0.3.2
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/nats-io/nats-server/v2 v2.3.4 // indirect
+	github.com/nats-io/nats.go v1.11.1-0.20210623165838-4b75fc59ae30
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
@@ -19,7 +21,6 @@ require (
 	github.com/tkrajina/typescriptify-golang-structs v0.1.6
 	go.uber.org/fx v1.13.1
 	go.uber.org/zap v1.17.0
-	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.5 // indirect

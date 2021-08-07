@@ -12,5 +12,5 @@ type IDGraph struct {
 
 type IDProject struct {
 	ProjectId uint `json:"projectId,omitempty" form:"projectId"`
-	Id        uint `gorm:"primaryKey" json:"id,omitempty" form:"id"`
+	Id        uint `gorm:"primaryKey,omitempty" json:"id,omitempty" form:"id"`
 }

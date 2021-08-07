@@ -1,6 +1,8 @@
 package main
 
-import "autoflow/cmd"
+import (
+	"autoflow/internal/cmd"
+)
 
 func main() {
 	cmd.Execute()

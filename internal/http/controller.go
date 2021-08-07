@@ -2,11 +2,13 @@ package http
 
 import (
 	_ "autoflow/docs"
-	"autoflow/pkg/infra"
-	"autoflow/pkg/services/batch"
-	"autoflow/pkg/services/callback"
-	"autoflow/pkg/services/search"
-	"autoflow/pkg/services/storage"
+	"autoflow/internal/infra"
+	"autoflow/internal/services/batch"
+	"autoflow/internal/services/callback"
+	"autoflow/internal/services/module"
+	"autoflow/internal/services/search"
+	"autoflow/internal/services/storage"
+	"autoflow/pkg/entities/errors"
 	"context"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -21,6 +23,7 @@ import (
 type Controller struct {
 	batch    *batch.Service
 	storage  *storage.Service
+	module   *module.Service
 	callback *callback.Service
 	search   *search.Service
 	logger   *zap.Logger
@@ -40,6 +43,7 @@ func NewController(
 	callbackSvc *callback.Service,
 	searchSvc *search.Service,
 	logger *zap.Logger,
+	module *module.Service,
 	lc fx.Lifecycle,
 ) *Controller {
 	e := gin.New()
@@ -52,6 +56,7 @@ func NewController(
 		storage:  storageSvc,
 		callback: callbackSvc,
 		search:   searchSvc,
+		module:   module,
 		logger:   logger.With(zap.String("service", "controller")),
 	}
 
@@ -76,6 +81,10 @@ func NewController(
 
 	e.POST("/find-active", c.FindActive)
 
+	e.GET("/list-module", c.ListModule)
+	e.POST("/module", c.SaveModule)
+	e.DELETE("/module", c.DeleteModule)
+
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			errCh := make(chan error)
@@ -98,7 +107,7 @@ func NewController(
 }
 
 func (c *Controller) DoCall(g *gin.Context, method interface{}, bind func() (interface{}, error)) {
-	logger := c.logger.With(zap.String("url", g.Request.RequestURI))
+	logger := c.logger.With(zap.String("url", g.Request.RequestURI), zap.String("method", g.Request.Method))
 	methodValue := reflect.ValueOf(method)
 	obj, err := bind()
 	if err != nil {
@@ -109,8 +118,12 @@ func (c *Controller) DoCall(g *gin.Context, method interface{}, bind func() (int
 	result := resultValues[0].Interface()
 	errInf := resultValues[1].Interface()
 	if errInf != nil {
-		logger.Error("service error", zap.Error(errInf.(error)))
-		g.AbortWithStatus(http.StatusInternalServerError)
+		err := errInf.(error)
+		logger.Error("service error", zap.Error(err))
+		_ = g.Error(err)
+		g.JSON(http.StatusInternalServerError, errors.HttpError{
+			Message: err.Error(),
+		})
 		return
 	}
 	g.JSON(http.StatusOK, result)

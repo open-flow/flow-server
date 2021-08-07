@@ -4,13 +4,14 @@ import (
 	"autoflow/pkg/entities/batch"
 	"autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
+	"autoflow/pkg/entities/module"
 	"autoflow/pkg/entities/search"
 	"autoflow/pkg/entities/storage"
 	"github.com/gin-gonic/gin"
 )
 
 // Call godoc
-// @Summary Execute callback
+// @Summary executes callback
 // @Id Call
 // @Accept  json
 // @Produce  json
@@ -26,7 +27,7 @@ func (c *Controller) Call(g *gin.Context) {
 }
 
 // ListGraph godoc
-// @Summary List graphs
+// @Summary lists graphs
 // @Id ListGraph
 // @Accept  json
 // @Produce  json
@@ -42,11 +43,12 @@ func (c *Controller) ListGraph(g *gin.Context) {
 }
 
 // GetGraph godoc
-// @Summary Get graph with nodes, connections and event cards
+// @Summary gets graph with Nodes, Connections and EventCards
 // @Id GetGraph
 // @Accept  json
 // @Produce  json
-// @Param request body storage.GetGraphRequest true "request"
+// @Param projectId query int true "project id"
+// @Param id query int true "graph id"
 // @Success 200 {object} storage.GetGraphResponse
 // @Router /graph [get]
 func (c *Controller) GetGraph(g *gin.Context) {
@@ -58,7 +60,7 @@ func (c *Controller) GetGraph(g *gin.Context) {
 }
 
 // BatchSave godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary saves new Nodes, Connections and EventCards
 // @Id BatchSave
 // @Accept  json
 // @Produce  json
@@ -68,12 +70,13 @@ func (c *Controller) GetGraph(g *gin.Context) {
 func (c *Controller) BatchSave(g *gin.Context) {
 	c.DoCall(g, c.batch.Save, func() (interface{}, error) {
 		obj := &batch.SaveRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // BatchDelete godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary deletes all Nodes, Connections and EventCards from the graph
 // @Id BatchDelete
 // @Accept  json
 // @Produce  json
@@ -83,12 +86,13 @@ func (c *Controller) BatchSave(g *gin.Context) {
 func (c *Controller) BatchDelete(g *gin.Context) {
 	c.DoCall(g, c.batch.Delete, func() (interface{}, error) {
 		obj := &batch.DeleteRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // FindActive godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary finds graphs that would activate for event
 // @Id FindActive
 // @Accept  json
 // @Produce  json
@@ -98,12 +102,13 @@ func (c *Controller) BatchDelete(g *gin.Context) {
 func (c *Controller) FindActive(g *gin.Context) {
 	c.DoCall(g, c.search.FindActive, func() (interface{}, error) {
 		obj := &search.FindActiveRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // SaveGraph godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary saves or updates graph. Nodes, Connections and EventCards are ignored
 // @Id SaveGraph
 // @Accept  json
 // @Produce  json
@@ -113,12 +118,13 @@ func (c *Controller) FindActive(g *gin.Context) {
 func (c *Controller) SaveGraph(g *gin.Context) {
 	c.DoCall(g, c.storage.SaveGraph, func() (interface{}, error) {
 		obj := &graph.DBGraph{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // SaveNode godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary saves or updates node
 // @Id SaveNode
 // @Accept  json
 // @Produce  json
@@ -128,12 +134,13 @@ func (c *Controller) SaveGraph(g *gin.Context) {
 func (c *Controller) SaveNode(g *gin.Context) {
 	c.DoCall(g, c.storage.SaveNode, func() (interface{}, error) {
 		obj := &graph.DBNode{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // SaveConnection godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary saves or updates Connection
 // @Id SaveConnection
 // @Accept  json
 // @Produce  json
@@ -143,12 +150,13 @@ func (c *Controller) SaveNode(g *gin.Context) {
 func (c *Controller) SaveConnection(g *gin.Context) {
 	c.DoCall(g, c.storage.SaveConnection, func() (interface{}, error) {
 		obj := &graph.DBConnection{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // SaveEventCard godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary saves or updates EventCard
 // @Id SaveEventCard
 // @Accept  json
 // @Produce  json
@@ -158,12 +166,13 @@ func (c *Controller) SaveConnection(g *gin.Context) {
 func (c *Controller) SaveEventCard(g *gin.Context) {
 	c.DoCall(g, c.storage.SaveEventCard, func() (interface{}, error) {
 		obj := &graph.DBEventCard{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // DeleteGraph godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary deletes graph and all related Nodes, Connections and EventCards
 // @Id DeleteGraph
 // @Accept  json
 // @Produce  json
@@ -171,14 +180,15 @@ func (c *Controller) SaveEventCard(g *gin.Context) {
 // @Success 200 {object} storage.DeleteResponse
 // @Router /graph [delete]
 func (c *Controller) DeleteGraph(g *gin.Context) {
-	c.DoCall(g, c.storage.SaveGraph, func() (interface{}, error) {
+	c.DoCall(g, c.storage.DeleteGraph, func() (interface{}, error) {
 		obj := &storage.DeleteRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // DeleteNode godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary deletes Node
 // @Id DeleteNode
 // @Accept  json
 // @Produce  json
@@ -186,14 +196,15 @@ func (c *Controller) DeleteGraph(g *gin.Context) {
 // @Success 200 {object} storage.DeleteResponse
 // @Router /node [delete]
 func (c *Controller) DeleteNode(g *gin.Context) {
-	c.DoCall(g, c.storage.SaveNode, func() (interface{}, error) {
+	c.DoCall(g, c.storage.DeleteNode, func() (interface{}, error) {
 		obj := &storage.DeleteRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // DeleteConnection godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary deletes Connection
 // @Id DeleteConnection
 // @Accept  json
 // @Produce  json
@@ -201,14 +212,15 @@ func (c *Controller) DeleteNode(g *gin.Context) {
 // @Success 200 {object} storage.DeleteResponse
 // @Router /connection [delete]
 func (c *Controller) DeleteConnection(g *gin.Context) {
-	c.DoCall(g, c.storage.SaveConnection, func() (interface{}, error) {
+	c.DoCall(g, c.storage.DeleteConnection, func() (interface{}, error) {
 		obj := &storage.DeleteRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }
 
 // DeleteEventCard godoc
-// @Summary Save all nodes, connections and event cards
+// @Summary deletes EventCard
 // @Id DeleteEventCard
 // @Accept  json
 // @Produce  json
@@ -216,8 +228,56 @@ func (c *Controller) DeleteConnection(g *gin.Context) {
 // @Success 200 {object} storage.DeleteResponse
 // @Router /event-card [delete]
 func (c *Controller) DeleteEventCard(g *gin.Context) {
-	c.DoCall(g, c.storage.SaveEventCard, func() (interface{}, error) {
+	c.DoCall(g, c.storage.DeleteEventCard, func() (interface{}, error) {
 		obj := &storage.DeleteRequest{}
-		return obj, nil
+		err := g.BindJSON(obj)
+		return obj, err
+	})
+}
+
+// ListModule godoc
+// @Summary lists modules
+// @Id ListModule
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} module.ListResponse
+// @Router /list-module [get]
+func (c *Controller) ListModule(g *gin.Context) {
+	c.DoCall(g, c.module.List, func() (interface{}, error) {
+		obj := &module.ListRequest{}
+		err := g.BindQuery(obj)
+		return obj, err
+	})
+}
+
+// SaveModule godoc
+// @Summary saves Module
+// @Id SaveModule
+// @Accept  json
+// @Produce  json
+// @Param request body module.DBModule true "request"
+// @Success 200 {object} module.DBModule
+// @Router /module [post]
+func (c *Controller) SaveModule(g *gin.Context) {
+	c.DoCall(g, c.module.Save, func() (interface{}, error) {
+		obj := &module.DBModule{}
+		err := g.BindJSON(obj)
+		return obj, err
+	})
+}
+
+// DeleteModule godoc
+// @Summary deletes Module
+// @Id DeleteModule
+// @Accept  json
+// @Produce  json
+// @Param request body module.DeleteRequest true "request"
+// @Success 200 {object} module.DeleteResponse
+// @Router /module [delete]
+func (c *Controller) DeleteModule(g *gin.Context) {
+	c.DoCall(g, c.module.Delete, func() (interface{}, error) {
+		obj := &module.DeleteRequest{}
+		err := g.BindJSON(obj)
+		return obj, err
 	})
 }

@@ -32,7 +32,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "saves new Nodes, Connections and EventCards",
                 "operationId": "BatchSave",
                 "parameters": [
                     {
@@ -61,7 +61,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "deletes all Nodes, Connections and EventCards from the graph",
                 "operationId": "BatchDelete",
                 "parameters": [
                     {
@@ -92,7 +92,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Execute callback",
+                "summary": "executes callback",
                 "operationId": "Call",
                 "parameters": [
                     {
@@ -123,7 +123,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "saves or updates Connection",
                 "operationId": "SaveConnection",
                 "parameters": [
                     {
@@ -152,7 +152,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "deletes Connection",
                 "operationId": "DeleteConnection",
                 "parameters": [
                     {
@@ -183,7 +183,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "saves or updates EventCard",
                 "operationId": "SaveEventCard",
                 "parameters": [
                     {
@@ -212,7 +212,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "deletes EventCard",
                 "operationId": "DeleteEventCard",
                 "parameters": [
                     {
@@ -243,7 +243,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "finds graphs that would activate for event",
                 "operationId": "FindActive",
                 "parameters": [
                     {
@@ -274,17 +274,22 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get graph with nodes, connections and event cards",
+                "summary": "gets graph with Nodes, Connections and EventCards",
                 "operationId": "GetGraph",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/storage.GetGraphRequest"
-                        }
+                        "type": "integer",
+                        "description": "project id",
+                        "name": "projectId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "graph id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -303,7 +308,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "saves or updates graph. Nodes, Connections and EventCards are ignored",
                 "operationId": "SaveGraph",
                 "parameters": [
                     {
@@ -332,7 +337,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "deletes graph and all related Nodes, Connections and EventCards",
                 "operationId": "DeleteGraph",
                 "parameters": [
                     {
@@ -363,7 +368,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "List graphs",
+                "summary": "lists graphs",
                 "operationId": "ListGraph",
                 "parameters": [
                     {
@@ -387,6 +392,86 @@ var doc = `{
                 }
             }
         },
+        "/list-module": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "lists modules",
+                "operationId": "ListModule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/module.ListResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/module": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "saves Module",
+                "operationId": "SaveModule",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/module.DBModule"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/module.DBModule"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "deletes Module",
+                "operationId": "DeleteModule",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/module.DeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/module.DeleteResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/node": {
             "post": {
                 "consumes": [
@@ -395,7 +480,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "saves or updates node",
                 "operationId": "SaveNode",
                 "parameters": [
                     {
@@ -424,7 +509,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Save all nodes, connections and event cards",
+                "summary": "deletes Node",
                 "operationId": "DeleteNode",
                 "parameters": [
                     {
@@ -789,6 +874,42 @@ var doc = `{
                 }
             }
         },
+        "module.DBModule": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "module": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "module.DeleteRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "module.DeleteResponse": {
+            "type": "object"
+        },
+        "module.ListResponse": {
+            "type": "object",
+            "properties": {
+                "modules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/module.DBModule"
+                    }
+                }
+            }
+        },
         "search.ActiveGraph": {
             "type": "object",
             "properties": {
@@ -865,17 +986,6 @@ var doc = `{
         },
         "storage.DeleteResponse": {
             "type": "object"
-        },
-        "storage.GetGraphRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "projectId": {
-                    "type": "integer"
-                }
-            }
         },
         "storage.GetGraphResponse": {
             "type": "object",
