@@ -1,8 +1,10 @@
 package graph
 
+import "autoflow/pkg/entities/common"
+
 type DBNode struct {
 	IDGraph
-	DataUI
+	common.DataUI
 	DataNode
 }
 
@@ -11,7 +13,6 @@ type DataNode struct {
 	LocalId uint `json:"localId"`
 
 	//Invocation
-	Type      string `json:"type"`
 	Module    string `json:"module"`
 	Function  string `json:"function"`
 	Arguments string `json:"arguments"`

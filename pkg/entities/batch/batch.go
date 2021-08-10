@@ -1,11 +1,12 @@
 package batch
 
 import (
+	"autoflow/pkg/entities/common"
 	"autoflow/pkg/entities/graph"
 )
 
 type SaveRequest struct {
-	graph.IDProject
+	common.IDProject
 
 	Nodes       []graph.DBNode       `json:"nodes"`
 	Cards       []graph.DBEventCard  `json:"cards"`
@@ -13,7 +14,7 @@ type SaveRequest struct {
 }
 
 type SaveResponse struct {
-	graph.IDProject
+	common.IDProject
 
 	Nodes       []*graph.DBNode       `json:"nodes"`
 	Cards       []*graph.DBEventCard  `json:"cards"`
@@ -21,7 +22,7 @@ type SaveResponse struct {
 }
 
 type DeleteRequest struct {
-	graph.IDGraph
+	common.IDProject
 
 	Nodes       []uint64 `json:"nodes"`
 	Cards       []uint64 `json:"cards"`

@@ -1,9 +1,20 @@
 package graph
 
-type DBGraph struct {
-	IDProject
+import "autoflow/pkg/entities/common"
 
-	DataUI
+type IDGraph struct {
+	common.IDProject
+	GraphId uint `gorm:"index" json:"graphId,omitempty"`
+}
+
+func (i *IDGraph) GetGraphId() uint {
+	return i.GraphId
+}
+
+type DBGraph struct {
+	common.IDProject
+
+	common.DataUI
 	DataGraph
 
 	Nodes       []DBNode       `gorm:"foreignKey:GraphId;references:Id;constraint:OnDelete:CASCADE;" json:"nodes,omitempty"`
@@ -14,3 +25,10 @@ type DBGraph struct {
 type DataGraph struct {
 	Counter uint `json:"counter"`
 }
+
+type Object interface {
+	common.ProjectObject
+	GetGraphId() uint
+}
+
+var _ Object = (*IDGraph)(nil)

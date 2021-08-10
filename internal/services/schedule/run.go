@@ -1,13 +1,13 @@
 package schedule
 
 import (
-	"autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/engine"
 	"autoflow/pkg/entities/graph"
 	"autoflow/pkg/utils"
 	"go.uber.org/zap"
 )
 
-func (s *Service) run(state *execution.State, ch chan *execution.Response) {
+func (s *Service) run(state *engine.State, ch chan *engine.Response) {
 LOOP:
 	for {
 		nextLen := len(state.Cursor.Next)
@@ -36,15 +36,15 @@ LOOP:
 
 		if err != nil {
 			logger.Error("error calling function", zap.Error(err))
-			ch <- &execution.Response{
+			ch <- &engine.Response{
 				Error: "Unknown Error",
 			}
 			return
 		}
 
 		if wrapper.Error != nil {
-			logger.Error("error response from function", zap.Any("response", wrapper))
-			ch <- &execution.Response{
+			logger.Error("error response from call", zap.Any("response", wrapper))
+			ch <- &engine.Response{
 				Error: wrapper.Error.Message,
 			}
 			return
@@ -78,7 +78,7 @@ LOOP:
 	}
 
 	if ch != nil {
-		ch <- &execution.Response{
+		ch <- &engine.Response{
 			Response: state.Memory.Response,
 		}
 	}
@@ -88,9 +88,9 @@ LOOP:
 	}
 }
 
-func (s *Service) fork(state *execution.State) {
+func (s *Service) fork(state *engine.State) {
 	for _, c := range state.Cursor.Next {
-		var stateCopy execution.State
+		var stateCopy engine.State
 		err := utils.DeepCopy(&stateCopy, state)
 		stateCopy.Cursor.Next = []graph.DataConnection{c}
 		if err != nil {

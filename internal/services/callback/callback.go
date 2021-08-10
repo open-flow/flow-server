@@ -3,7 +3,7 @@ package callback
 import (
 	"autoflow/internal/services/schedule"
 	"autoflow/internal/services/search"
-	"autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/engine"
 	"autoflow/pkg/entities/graph"
 	searchDto "autoflow/pkg/entities/search"
 	"context"
@@ -25,7 +25,7 @@ func New(search *search.Service, scheduler *schedule.Service, logger *zap.Logger
 	}
 }
 
-func (s *Service) Call(ctx context.Context, req *execution.Request) (*execution.Response, error) {
+func (s *Service) Call(ctx context.Context, req *engine.Request) (*engine.Response, error) {
 	active, err := s.search.FindActive(ctx, &searchDto.FindActiveRequest{
 		DataEvent: req.Event,
 	})
@@ -58,16 +58,16 @@ func (s *Service) Call(ctx context.Context, req *execution.Request) (*execution.
 	}
 
 	if responseActive != nil {
-		ch := make(chan *execution.Response)
+		ch := make(chan *engine.Response)
 		s.scheduler.Schedule(req, responseActive, responseActiveCard, ch)
 		select {
 		case <-ctx.Done():
-			return &execution.Response{
+			return &engine.Response{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
 		case <-time.After(30 * time.Second):
-			return &execution.Response{
+			return &engine.Response{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
@@ -76,7 +76,7 @@ func (s *Service) Call(ctx context.Context, req *execution.Request) (*execution.
 		}
 	}
 
-	return &execution.Response{
+	return &engine.Response{
 		Scheduled: true,
 	}, nil
 }

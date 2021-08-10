@@ -1,8 +1,8 @@
 package infra
 
 import (
+	"autoflow/pkg/entities/endpoint"
 	"autoflow/pkg/entities/graph"
-	"autoflow/pkg/entities/module"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -30,7 +30,8 @@ func NewGorm(config *FlowConfig) (*gorm.DB, error) {
 		&graph.DBEventCard{},
 		&graph.DBNode{},
 		&graph.DBConnection{},
-		&module.DBModule{},
+		&endpoint.DBEndpoint{},
+		&endpoint.DBError{},
 	)
 	if err != nil {
 		return nil, err

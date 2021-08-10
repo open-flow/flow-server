@@ -10,11 +10,21 @@ type FlowConfig struct {
 	NatsUrl     string
 	Development bool
 	ShowSql     bool
+	Redis       *RedisConfig
+}
+
+type RedisConfig struct {
+	Addr map[string]string
 }
 
 func NewConfig() (*FlowConfig, error) {
 	viper.SetDefault("MySqlDSN", "root:mysql@tcp(127.0.0.1:3306)/flow?charset=utf8mb4")
 	viper.SetDefault("HttpAddr", ":8080")
+	viper.SetDefault("Redis", &RedisConfig{
+		Addr: map[string]string{
+			"server1": ":6379",
+		},
+	})
 	viper.SetDefault("Development", true)
 	viper.SetDefault("NatsUrl", "")
 	viper.SetDefault("ShowSql", false)

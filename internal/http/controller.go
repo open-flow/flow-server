@@ -5,10 +5,10 @@ import (
 	"autoflow/internal/infra"
 	"autoflow/internal/services/batch"
 	"autoflow/internal/services/callback"
-	"autoflow/internal/services/module"
+	"autoflow/internal/services/endpoint"
 	"autoflow/internal/services/search"
 	"autoflow/internal/services/storage"
-	"autoflow/pkg/entities/errors"
+	"autoflow/pkg/entities/common"
 	"context"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -23,11 +23,11 @@ import (
 type Controller struct {
 	batch    *batch.Service
 	storage  *storage.Service
-	module   *module.Service
 	callback *callback.Service
 	search   *search.Service
 	logger   *zap.Logger
-	engine   *gin.Engine
+	gin      *gin.Engine
+	endpoint *endpoint.Controller
 }
 
 // @title Flow server
@@ -37,13 +37,13 @@ type Controller struct {
 // @BasePath
 
 func NewController(
-	config *infra.FlowConfig,
 	batchSvc *batch.Service,
 	storageSvc *storage.Service,
 	callbackSvc *callback.Service,
 	searchSvc *search.Service,
-	logger *zap.Logger,
-	module *module.Service,
+	loggerSvc *zap.Logger,
+	endpointSvc *endpoint.Controller,
+	config *infra.FlowConfig,
 	lc fx.Lifecycle,
 ) *Controller {
 	e := gin.New()
@@ -51,13 +51,13 @@ func NewController(
 	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	c := &Controller{
-		engine:   e,
+		gin:      e,
 		batch:    batchSvc,
 		storage:  storageSvc,
 		callback: callbackSvc,
 		search:   searchSvc,
-		module:   module,
-		logger:   logger.With(zap.String("service", "controller")),
+		logger:   loggerSvc.With(zap.String("service", "controller")),
+		endpoint: endpointSvc,
 	}
 
 	e.POST("/call", c.Call)
@@ -81,9 +81,9 @@ func NewController(
 
 	e.POST("/find-active", c.FindActive)
 
-	e.GET("/list-module", c.ListModule)
-	e.POST("/module", c.SaveModule)
-	e.DELETE("/module", c.DeleteModule)
+	e.GET("/list-module", c.ListEndpoint)
+	e.POST("/module", c.SaveEndpoint)
+	e.DELETE("/module", c.DeleteEndpoint)
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -115,17 +115,29 @@ func (c *Controller) DoCall(g *gin.Context, method interface{}, bind func() (int
 		return
 	}
 	resultValues := methodValue.Call([]reflect.Value{reflect.ValueOf(g), reflect.ValueOf(obj)})
-	result := resultValues[0].Interface()
-	errInf := resultValues[1].Interface()
+	var result interface{}
+	var errInf interface{}
+
+	switch len(resultValues) {
+	case 1:
+		errInf = resultValues[0].Interface()
+	case 2:
+		result = resultValues[0].Interface()
+		errInf = resultValues[1].Interface()
+	default:
+		panic("")
+	}
+
 	if errInf != nil {
 		err := errInf.(error)
 		logger.Error("service error", zap.Error(err))
 		_ = g.Error(err)
-		g.JSON(http.StatusInternalServerError, errors.HttpError{
+		g.JSON(http.StatusInternalServerError, common.HttpError{
 			Message: err.Error(),
 		})
 		return
 	}
+
 	g.JSON(http.StatusOK, result)
 	logger.Info("request served", zap.Any("response", result))
 }

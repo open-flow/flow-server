@@ -9,8 +9,6 @@ definitions:
         items:
           type: integer
         type: array
-      graphId:
-        type: integer
       id:
         type: integer
       nodes:
@@ -60,7 +58,53 @@ definitions:
       projectId:
         type: integer
     type: object
-  execution.Request:
+  common.IDProject:
+    properties:
+      id:
+        type: integer
+      projectId:
+        type: integer
+    type: object
+  endpoint.Container:
+    properties:
+      map:
+        additionalProperties:
+          $ref: '#/definitions/endpoint.Endpoint'
+        type: object
+    type: object
+  endpoint.DBEndpoint:
+    properties:
+      headers:
+        type: string
+      id:
+        type: integer
+      module:
+        type: string
+      projectId:
+        type: integer
+      query:
+        type: string
+      uri:
+        type: string
+    type: object
+  endpoint.Endpoint:
+    properties:
+      headers:
+        additionalProperties:
+          type: string
+        type: object
+      module:
+        type: string
+      uri:
+        type: string
+      values:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+    type: object
+  engine.Request:
     properties:
       context:
         additionalProperties: true
@@ -70,7 +114,7 @@ definitions:
       raw:
         type: object
     type: object
-  execution.Response:
+  engine.Response:
     properties:
       error:
         type: string
@@ -188,14 +232,12 @@ definitions:
         description: Placement
         type: integer
       module:
+        description: Invocation
         type: string
       name:
         type: string
       projectId:
         type: integer
-      type:
-        description: Invocation
-        type: string
       ui:
         type: string
     type: object
@@ -224,28 +266,14 @@ definitions:
       staticType:
         type: string
     type: object
-  module.DBModule:
+  graph.IDGraph:
     properties:
+      graphId:
+        type: integer
       id:
         type: integer
-      module:
-        type: string
-      uri:
-        type: string
-    type: object
-  module.DeleteRequest:
-    properties:
-      id:
+      projectId:
         type: integer
-    type: object
-  module.DeleteResponse:
-    type: object
-  module.ListResponse:
-    properties:
-      modules:
-        items:
-          $ref: '#/definitions/module.DBModule'
-        type: array
     type: object
   search.ActiveGraph:
     properties:
@@ -288,40 +316,6 @@ definitions:
           $ref: '#/definitions/search.ActiveGraph'
         type: array
     type: object
-  storage.DeleteRequest:
-    properties:
-      id:
-        type: integer
-      projectId:
-        type: integer
-    type: object
-  storage.DeleteResponse:
-    type: object
-  storage.GetGraphResponse:
-    properties:
-      cards:
-        items:
-          $ref: '#/definitions/graph.DBEventCard'
-        type: array
-      connections:
-        items:
-          $ref: '#/definitions/graph.DBConnection'
-        type: array
-      counter:
-        type: integer
-      id:
-        type: integer
-      name:
-        type: string
-      nodes:
-        items:
-          $ref: '#/definitions/graph.DBNode'
-        type: array
-      projectId:
-        type: integer
-      ui:
-        type: string
-    type: object
   storage.ListGraphResponse:
     properties:
       graphs:
@@ -329,11 +323,8 @@ definitions:
           $ref: '#/definitions/graph.DBGraph'
         type: array
     type: object
-host: localhost:8080
 info:
   contact: {}
-  title: Flow server
-  version: "1.0"
 paths:
   /batch:
     delete:
@@ -385,14 +376,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/execution.Request'
+          $ref: '#/definitions/engine.Request'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/execution.Response'
+            $ref: '#/definitions/engine.Response'
       summary: executes callback
   /connection:
     delete:
@@ -405,14 +396,9 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/storage.DeleteRequest'
+          $ref: '#/definitions/graph.IDGraph'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/storage.DeleteResponse'
       summary: deletes Connection
     post:
       consumes:
@@ -444,14 +430,9 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/storage.DeleteRequest'
+          $ref: '#/definitions/graph.IDGraph'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/storage.DeleteResponse'
       summary: deletes EventCard
     post:
       consumes:
@@ -503,14 +484,9 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/storage.DeleteRequest'
+          $ref: '#/definitions/graph.IDGraph'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/storage.DeleteResponse'
       summary: deletes graph and all related Nodes, Connections and EventCards
     get:
       consumes:
@@ -533,7 +509,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/storage.GetGraphResponse'
+            $ref: '#/definitions/graph.DBGraph'
       summary: gets graph with Nodes, Connections and EventCards
     post:
       consumes:
@@ -579,53 +555,56 @@ paths:
     get:
       consumes:
       - application/json
-      operationId: ListModule
+      operationId: ListEndpoint
+      parameters:
+      - description: project ids
+        in: query
+        items:
+          type: integer
+        name: projectId
+        required: true
+        type: array
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/module.ListResponse'
-      summary: lists modules
+            $ref: '#/definitions/endpoint.Container'
+      summary: lists endpoints
   /module:
     delete:
       consumes:
       - application/json
-      operationId: DeleteModule
+      operationId: DeleteEndpoint
       parameters:
       - description: request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/module.DeleteRequest'
+          $ref: '#/definitions/common.IDProject'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/module.DeleteResponse'
       summary: deletes Module
     post:
       consumes:
       - application/json
-      operationId: SaveModule
+      operationId: SaveEndpoint
       parameters:
       - description: request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/module.DBModule'
+          $ref: '#/definitions/endpoint.DBEndpoint'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/module.DBModule'
+            $ref: '#/definitions/endpoint.DBEndpoint'
       summary: saves Module
   /node:
     delete:
@@ -638,14 +617,9 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/storage.DeleteRequest'
+          $ref: '#/definitions/graph.IDGraph'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/storage.DeleteResponse'
       summary: deletes Node
     post:
       consumes:

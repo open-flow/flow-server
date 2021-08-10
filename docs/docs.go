@@ -101,7 +101,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/execution.Request"
+                            "$ref": "#/definitions/engine.Request"
                         }
                     }
                 ],
@@ -109,7 +109,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/execution.Response"
+                            "$ref": "#/definitions/engine.Response"
                         }
                     }
                 }
@@ -161,18 +161,10 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/event-card": {
@@ -221,18 +213,10 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/find-active": {
@@ -296,7 +280,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/storage.GetGraphResponse"
+                            "$ref": "#/definitions/graph.DBGraph"
                         }
                     }
                 }
@@ -346,18 +330,10 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/list-graphs": {
@@ -400,13 +376,25 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "lists modules",
-                "operationId": "ListModule",
+                "summary": "lists endpoints",
+                "operationId": "ListEndpoint",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "description": "project ids",
+                        "name": "projectId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/module.ListResponse"
+                            "$ref": "#/definitions/endpoint.Container"
                         }
                     }
                 }
@@ -421,7 +409,7 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "saves Module",
-                "operationId": "SaveModule",
+                "operationId": "SaveEndpoint",
                 "parameters": [
                     {
                         "description": "request",
@@ -429,7 +417,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/module.DBModule"
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
                         }
                     }
                 ],
@@ -437,7 +425,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/module.DBModule"
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
                         }
                     }
                 }
@@ -450,7 +438,7 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "deletes Module",
-                "operationId": "DeleteModule",
+                "operationId": "DeleteEndpoint",
                 "parameters": [
                     {
                         "description": "request",
@@ -458,18 +446,10 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/module.DeleteRequest"
+                            "$ref": "#/definitions/common.IDProject"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/module.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/node": {
@@ -518,18 +498,10 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         }
     },
@@ -548,9 +520,6 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
-                },
-                "graphId": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -627,7 +596,78 @@ var doc = `{
                 }
             }
         },
-        "execution.Request": {
+        "common.IDProject": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "projectId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "endpoint.Container": {
+            "type": "object",
+            "properties": {
+                "map": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/endpoint.Endpoint"
+                    }
+                }
+            }
+        },
+        "endpoint.DBEndpoint": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "module": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "endpoint.Endpoint": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "module": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "engine.Request": {
             "type": "object",
             "properties": {
                 "context": {
@@ -642,7 +682,7 @@ var doc = `{
                 }
             }
         },
-        "execution.Response": {
+        "engine.Response": {
             "type": "object",
             "properties": {
                 "error": {
@@ -819,6 +859,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "module": {
+                    "description": "Invocation",
                     "type": "string"
                 },
                 "name": {
@@ -826,10 +867,6 @@ var doc = `{
                 },
                 "projectId": {
                     "type": "integer"
-                },
-                "type": {
-                    "description": "Invocation",
-                    "type": "string"
                 },
                 "ui": {
                     "type": "string"
@@ -874,39 +911,17 @@ var doc = `{
                 }
             }
         },
-        "module.DBModule": {
+        "graph.IDGraph": {
             "type": "object",
             "properties": {
+                "graphId": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "module": {
-                    "type": "string"
-                },
-                "uri": {
-                    "type": "string"
-                }
-            }
-        },
-        "module.DeleteRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
+                "projectId": {
                     "type": "integer"
-                }
-            }
-        },
-        "module.DeleteResponse": {
-            "type": "object"
-        },
-        "module.ListResponse": {
-            "type": "object",
-            "properties": {
-                "modules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/module.DBModule"
-                    }
                 }
             }
         },
@@ -973,58 +988,6 @@ var doc = `{
                 }
             }
         },
-        "storage.DeleteRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "projectId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "storage.DeleteResponse": {
-            "type": "object"
-        },
-        "storage.GetGraphResponse": {
-            "type": "object",
-            "properties": {
-                "cards": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBEventCard"
-                    }
-                },
-                "connections": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBConnection"
-                    }
-                },
-                "counter": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "nodes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBNode"
-                    }
-                },
-                "projectId": {
-                    "type": "integer"
-                },
-                "ui": {
-                    "type": "string"
-                }
-            }
-        },
         "storage.ListGraphResponse": {
             "type": "object",
             "properties": {
@@ -1050,11 +1013,11 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "1.0",
-	Host:        "localhost:8080",
+	Version:     "",
+	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "Flow server",
+	Title:       "",
 	Description: "",
 }
 

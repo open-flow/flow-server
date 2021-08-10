@@ -5,16 +5,15 @@ import (
 	"autoflow/internal/infra"
 	"autoflow/internal/services/batch"
 	"autoflow/internal/services/callback"
-	"autoflow/internal/services/module"
+	"autoflow/internal/services/endpoint"
+	"autoflow/internal/services/logger"
 	"autoflow/internal/services/registry"
-	"autoflow/internal/services/registry/static"
+	"autoflow/internal/services/repo"
 	"autoflow/internal/services/schedule"
 	"autoflow/internal/services/search"
 	"autoflow/internal/services/storage"
 	batchDto "autoflow/pkg/entities/batch"
-	executionDto "autoflow/pkg/entities/execution"
 	"autoflow/pkg/entities/graph"
-	registryDto "autoflow/pkg/entities/module"
 	"github.com/spf13/cobra"
 	"github.com/tkrajina/typescriptify-golang-structs/typescriptify"
 	"go.uber.org/fx"
@@ -26,7 +25,7 @@ var serve = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		app := fx.New(
 			Provide(),
-			fx.Invoke(http.NewController, static.HttpEndpointStaticConfig),
+			fx.Invoke(http.NewController),
 		)
 		app.Run()
 	},
@@ -51,19 +50,7 @@ var ts = &cobra.Command{
 				Add(batchDto.SaveRequest{}).
 				Add(batchDto.SaveResponse{}).
 				Add(batchDto.DeleteRequest{}).
-				Add(batchDto.DeleteResponse{}).
-				Add(registryDto.FunctionDef{}).
-				Add(registryDto.ModuleDef{}).
-				Add(executionDto.CallAction{}).
-				Add(executionDto.CallAction{}).
-				Add(executionDto.CallError{}).
-				Add(executionDto.CallReturn{}).
-				Add(executionDto.State{}).
-				Add(executionDto.Cursor{}).
-				Add(executionDto.Memory{}).
-				Add(executionDto.Request{}).
-				Add(executionDto.Response{}).
-				Add(graph.IDGraph{})
+				Add(batchDto.DeleteResponse{})
 
 		err := converter.ConvertToFile("ts/models.ts")
 		if err != nil {
@@ -74,19 +61,32 @@ var ts = &cobra.Command{
 
 func Provide() fx.Option {
 	return fx.Provide(
+		//infra
+		infra.NewConfig,
+		infra.NewNats,
+		infra.NewGorm,
+		infra.NewLogger,
+		infra.NewSugaredLogger,
+		infra.NewRedis,
+
+		callback.New,
+
+		endpoint.NewCache,
+		endpoint.NewController,
+		endpoint.NewErrorService,
+
+		logger.NewService,
+
+		registry.NewResty,
+		registry.NewService,
+
+		repo.NewService,
+
 		batch.New,
 		storage.New,
 		search.New,
 		schedule.New,
-		callback.New,
-		module.New,
+
 		http.NewController,
-		infra.NewConfig,
-		infra.NewNats,
-		infra.NewGorm,
-		static.HttpEndpointStaticConfig,
-		registry.NewRegistryService,
-		infra.NewLogger,
-		infra.NewSugaredLogger,
 	)
 }

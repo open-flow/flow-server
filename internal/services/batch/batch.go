@@ -2,6 +2,7 @@ package batch
 
 import (
 	"autoflow/pkg/entities/batch"
+	"autoflow/pkg/entities/common"
 	"autoflow/pkg/entities/graph"
 	"context"
 	"gorm.io/gorm"
@@ -25,7 +26,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 	connections := make([]*graph.DBConnection, len(r.Connections))
 
 	idGraph := graph.IDGraph{
-		IDProject: graph.IDProject{
+		IDProject: common.IDProject{
 			ProjectId: r.ProjectId,
 		},
 		GraphId: r.Id,

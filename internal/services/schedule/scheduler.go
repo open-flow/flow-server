@@ -2,7 +2,7 @@ package schedule
 
 import (
 	"autoflow/internal/services/registry"
-	executionDto "autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/engine"
 	"autoflow/pkg/entities/graph"
 	"autoflow/pkg/entities/search"
 	"go.uber.org/zap"
@@ -21,13 +21,13 @@ func New(regSvc *registry.Service, logger *zap.Logger) *Service {
 }
 
 func (s *Service) Schedule(
-	req *executionDto.Request,
+	req *engine.Request,
 	ag *search.ActiveGraph,
 	ac *graph.DBEventCard,
-	res chan *executionDto.Response,
+	res chan *engine.Response,
 ) {
 	g := ag.Graph
-	cursor := &executionDto.Cursor{}
+	cursor := &engine.Cursor{}
 
 	if ac.SlidePort != "" {
 		cursor.Next = g.FindConnectedNodes(ac.TargetId, ac.SlidePort)
@@ -39,12 +39,12 @@ func (s *Service) Schedule(
 		}
 	}
 
-	memory := &executionDto.Memory{
+	memory := &engine.Memory{
 		Context:  req.Context,
 		Response: nil,
 	}
 
-	state := &executionDto.State{
+	state := &engine.State{
 		Graph:      g,
 		Card:       ac,
 		RawRequest: req.RawRequest,

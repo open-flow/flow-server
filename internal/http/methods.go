@@ -2,9 +2,10 @@ package http
 
 import (
 	"autoflow/pkg/entities/batch"
-	"autoflow/pkg/entities/execution"
+	"autoflow/pkg/entities/common"
+	"autoflow/pkg/entities/endpoint"
+	"autoflow/pkg/entities/engine"
 	"autoflow/pkg/entities/graph"
-	"autoflow/pkg/entities/module"
 	"autoflow/pkg/entities/search"
 	"autoflow/pkg/entities/storage"
 	"github.com/gin-gonic/gin"
@@ -15,12 +16,12 @@ import (
 // @Id Call
 // @Accept  json
 // @Produce  json
-// @Param request body execution.Request true "request"
-// @Success 200 {object} execution.Response
+// @Param request body engine.Request true "request"
+// @Success 200 {object} engine.Response
 // @Router /call [post]
 func (c *Controller) Call(g *gin.Context) {
 	c.DoCall(g, c.callback.Call, func() (interface{}, error) {
-		obj := execution.Request{}
+		obj := engine.Request{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -49,11 +50,11 @@ func (c *Controller) ListGraph(g *gin.Context) {
 // @Produce  json
 // @Param projectId query int true "project id"
 // @Param id query int true "graph id"
-// @Success 200 {object} storage.GetGraphResponse
+// @Success 200 {object} graph.DBGraph
 // @Router /graph [get]
 func (c *Controller) GetGraph(g *gin.Context) {
 	c.DoCall(g, c.storage.GetGraph, func() (interface{}, error) {
-		obj := &storage.GetGraphRequest{}
+		obj := &graph.IDGraph{}
 		err := g.BindQuery(obj)
 		return obj, err
 	})
@@ -176,12 +177,11 @@ func (c *Controller) SaveEventCard(g *gin.Context) {
 // @Id DeleteGraph
 // @Accept  json
 // @Produce  json
-// @Param request body storage.DeleteRequest true "request"
-// @Success 200 {object} storage.DeleteResponse
+// @Param request body graph.IDGraph true "request"
 // @Router /graph [delete]
 func (c *Controller) DeleteGraph(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteGraph, func() (interface{}, error) {
-		obj := &storage.DeleteRequest{}
+		obj := &graph.IDGraph{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -192,12 +192,11 @@ func (c *Controller) DeleteGraph(g *gin.Context) {
 // @Id DeleteNode
 // @Accept  json
 // @Produce  json
-// @Param request body storage.DeleteRequest true "request"
-// @Success 200 {object} storage.DeleteResponse
+// @Param request body graph.IDGraph true "request"
 // @Router /node [delete]
 func (c *Controller) DeleteNode(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteNode, func() (interface{}, error) {
-		obj := &storage.DeleteRequest{}
+		obj := &graph.IDGraph{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -208,12 +207,11 @@ func (c *Controller) DeleteNode(g *gin.Context) {
 // @Id DeleteConnection
 // @Accept  json
 // @Produce  json
-// @Param request body storage.DeleteRequest true "request"
-// @Success 200 {object} storage.DeleteResponse
+// @Param request body graph.IDGraph true "request"
 // @Router /connection [delete]
 func (c *Controller) DeleteConnection(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteConnection, func() (interface{}, error) {
-		obj := &storage.DeleteRequest{}
+		obj := &graph.IDGraph{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -224,59 +222,58 @@ func (c *Controller) DeleteConnection(g *gin.Context) {
 // @Id DeleteEventCard
 // @Accept  json
 // @Produce  json
-// @Param request body storage.DeleteRequest true "request"
-// @Success 200 {object} storage.DeleteResponse
+// @Param request body graph.IDGraph true "request"
 // @Router /event-card [delete]
 func (c *Controller) DeleteEventCard(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteEventCard, func() (interface{}, error) {
-		obj := &storage.DeleteRequest{}
+		obj := &graph.IDGraph{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
 }
 
-// ListModule godoc
-// @Summary lists modules
-// @Id ListModule
+// ListEndpoint godoc
+// @Summary lists endpoints
+// @Id ListEndpoint
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} module.ListResponse
+// @Param projectId query []int true "project ids"
+// @Success 200 {object} endpoint.Container
 // @Router /list-module [get]
-func (c *Controller) ListModule(g *gin.Context) {
-	c.DoCall(g, c.module.List, func() (interface{}, error) {
-		obj := &module.ListRequest{}
+func (c *Controller) ListEndpoint(g *gin.Context) {
+	c.DoCall(g, c.endpoint.List, func() (interface{}, error) {
+		obj := &common.IDProject{}
 		err := g.BindQuery(obj)
 		return obj, err
 	})
 }
 
-// SaveModule godoc
+// SaveEndpoint godoc
 // @Summary saves Module
-// @Id SaveModule
+// @Id SaveEndpoint
 // @Accept  json
 // @Produce  json
-// @Param request body module.DBModule true "request"
-// @Success 200 {object} module.DBModule
+// @Param request body endpoint.DBEndpoint true "request"
+// @Success 200 {object} endpoint.DBEndpoint
 // @Router /module [post]
-func (c *Controller) SaveModule(g *gin.Context) {
-	c.DoCall(g, c.module.Save, func() (interface{}, error) {
-		obj := &module.DBModule{}
+func (c *Controller) SaveEndpoint(g *gin.Context) {
+	c.DoCall(g, c.endpoint.Save, func() (interface{}, error) {
+		obj := &endpoint.DBEndpoint{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
 }
 
-// DeleteModule godoc
+// DeleteEndpoint godoc
 // @Summary deletes Module
-// @Id DeleteModule
+// @Id DeleteEndpoint
 // @Accept  json
 // @Produce  json
-// @Param request body module.DeleteRequest true "request"
-// @Success 200 {object} module.DeleteResponse
+// @Param request body common.IDProject true "request"
 // @Router /module [delete]
-func (c *Controller) DeleteModule(g *gin.Context) {
-	c.DoCall(g, c.module.Delete, func() (interface{}, error) {
-		obj := &module.DeleteRequest{}
+func (c *Controller) DeleteEndpoint(g *gin.Context) {
+	c.DoCall(g, c.endpoint.Delete, func() (interface{}, error) {
+		obj := &common.IDProject{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})

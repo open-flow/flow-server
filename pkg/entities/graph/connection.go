@@ -1,8 +1,10 @@
 package graph
 
+import "autoflow/pkg/entities/common"
+
 type DBConnection struct {
 	IDGraph
-	DataUI
+	common.DataUI
 	DataConnection
 }
 

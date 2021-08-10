@@ -1,11 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Flow server",
-        "contact": {},
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8080",
     "paths": {
         "/batch": {
             "post": {
@@ -84,7 +81,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/execution.Request"
+                            "$ref": "#/definitions/engine.Request"
                         }
                     }
                 ],
@@ -92,7 +89,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/execution.Response"
+                            "$ref": "#/definitions/engine.Response"
                         }
                     }
                 }
@@ -144,18 +141,10 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/event-card": {
@@ -204,18 +193,10 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/find-active": {
@@ -279,7 +260,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/storage.GetGraphResponse"
+                            "$ref": "#/definitions/graph.DBGraph"
                         }
                     }
                 }
@@ -329,18 +310,10 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/list-graphs": {
@@ -383,13 +356,25 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "lists modules",
-                "operationId": "ListModule",
+                "summary": "lists endpoints",
+                "operationId": "ListEndpoint",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "description": "project ids",
+                        "name": "projectId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/module.ListResponse"
+                            "$ref": "#/definitions/endpoint.Container"
                         }
                     }
                 }
@@ -404,7 +389,7 @@
                     "application/json"
                 ],
                 "summary": "saves Module",
-                "operationId": "SaveModule",
+                "operationId": "SaveEndpoint",
                 "parameters": [
                     {
                         "description": "request",
@@ -412,7 +397,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/module.DBModule"
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
                         }
                     }
                 ],
@@ -420,7 +405,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/module.DBModule"
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
                         }
                     }
                 }
@@ -433,7 +418,7 @@
                     "application/json"
                 ],
                 "summary": "deletes Module",
-                "operationId": "DeleteModule",
+                "operationId": "DeleteEndpoint",
                 "parameters": [
                     {
                         "description": "request",
@@ -441,18 +426,10 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/module.DeleteRequest"
+                            "$ref": "#/definitions/common.IDProject"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/module.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/node": {
@@ -501,18 +478,10 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/storage.DeleteRequest"
+                            "$ref": "#/definitions/graph.IDGraph"
                         }
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/storage.DeleteResponse"
-                        }
-                    }
-                }
+                ]
             }
         }
     },
@@ -531,9 +500,6 @@
                     "items": {
                         "type": "integer"
                     }
-                },
-                "graphId": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -610,7 +576,78 @@
                 }
             }
         },
-        "execution.Request": {
+        "common.IDProject": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "projectId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "endpoint.Container": {
+            "type": "object",
+            "properties": {
+                "map": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/endpoint.Endpoint"
+                    }
+                }
+            }
+        },
+        "endpoint.DBEndpoint": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "module": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "endpoint.Endpoint": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "module": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "engine.Request": {
             "type": "object",
             "properties": {
                 "context": {
@@ -625,7 +662,7 @@
                 }
             }
         },
-        "execution.Response": {
+        "engine.Response": {
             "type": "object",
             "properties": {
                 "error": {
@@ -802,6 +839,7 @@
                     "type": "integer"
                 },
                 "module": {
+                    "description": "Invocation",
                     "type": "string"
                 },
                 "name": {
@@ -809,10 +847,6 @@
                 },
                 "projectId": {
                     "type": "integer"
-                },
-                "type": {
-                    "description": "Invocation",
-                    "type": "string"
                 },
                 "ui": {
                     "type": "string"
@@ -857,39 +891,17 @@
                 }
             }
         },
-        "module.DBModule": {
+        "graph.IDGraph": {
             "type": "object",
             "properties": {
+                "graphId": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "module": {
-                    "type": "string"
-                },
-                "uri": {
-                    "type": "string"
-                }
-            }
-        },
-        "module.DeleteRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
+                "projectId": {
                     "type": "integer"
-                }
-            }
-        },
-        "module.DeleteResponse": {
-            "type": "object"
-        },
-        "module.ListResponse": {
-            "type": "object",
-            "properties": {
-                "modules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/module.DBModule"
-                    }
                 }
             }
         },
@@ -953,58 +965,6 @@
                     "items": {
                         "$ref": "#/definitions/search.ActiveGraph"
                     }
-                }
-            }
-        },
-        "storage.DeleteRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "projectId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "storage.DeleteResponse": {
-            "type": "object"
-        },
-        "storage.GetGraphResponse": {
-            "type": "object",
-            "properties": {
-                "cards": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBEventCard"
-                    }
-                },
-                "connections": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBConnection"
-                    }
-                },
-                "counter": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "nodes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/graph.DBNode"
-                    }
-                },
-                "projectId": {
-                    "type": "integer"
-                },
-                "ui": {
-                    "type": "string"
                 }
             }
         },

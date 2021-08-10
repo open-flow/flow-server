@@ -1,9 +1,11 @@
 package graph
 
+import "autoflow/pkg/entities/common"
+
 type DBEventCard struct {
 	IDGraph
 
-	DataUI
+	common.DataUI
 	DataEventCard
 }
 
