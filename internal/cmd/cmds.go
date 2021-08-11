@@ -3,17 +3,23 @@ package cmd
 import (
 	"autoflow/internal/http"
 	"autoflow/internal/infra"
-	"autoflow/internal/services/batch"
-	"autoflow/internal/services/callback"
-	"autoflow/internal/services/endpoint"
-	"autoflow/internal/services/logger"
-	"autoflow/internal/services/registry"
-	"autoflow/internal/services/repo"
-	"autoflow/internal/services/schedule"
-	"autoflow/internal/services/search"
-	"autoflow/internal/services/storage"
-	batchDto "autoflow/pkg/entities/batch"
-	"autoflow/pkg/entities/graph"
+	"autoflow/internal/modules/engine/callback"
+	"autoflow/internal/modules/engine/registry"
+	"autoflow/internal/modules/engine/schedule"
+	"autoflow/internal/modules/storage/batch"
+	"autoflow/internal/modules/storage/endpoint"
+	"autoflow/internal/modules/storage/logger"
+	"autoflow/internal/modules/storage/repo"
+	"autoflow/internal/modules/storage/search"
+	"autoflow/internal/modules/storage/storage"
+	"autoflow/pkg/common"
+	callDto "autoflow/pkg/engine/call"
+	stateDto "autoflow/pkg/engine/state"
+	batchDto "autoflow/pkg/storage/batch"
+	endpointDto "autoflow/pkg/storage/endpoint"
+	"autoflow/pkg/storage/graph"
+	searchDto "autoflow/pkg/storage/search"
+	storageDto "autoflow/pkg/storage/storage"
 	"github.com/spf13/cobra"
 	"github.com/tkrajina/typescriptify-golang-structs/typescriptify"
 	"go.uber.org/fx"
@@ -38,6 +44,25 @@ var ts = &cobra.Command{
 		converter :=
 			typescriptify.New().
 				WithBackupDir("ts").WithInterface(true).
+				Add(batchDto.SaveRequest{}).
+				Add(batchDto.SaveResponse{}).
+				Add(batchDto.DeleteRequest{}).
+				Add(endpointDto.Endpoint{}).
+				Add(endpointDto.DBEndpoint{}).
+				Add(endpointDto.DataEndpoint{}).
+				Add(endpointDto.DBError{}).
+				Add(endpointDto.DataError{}).
+				Add(endpointDto.Container{}).
+				Add(common.IDProject{}).
+				Add(common.ByProjectId{}).
+				Add(callDto.Action{}).
+				Add(callDto.Error{}).
+				Add(callDto.Return{}).
+				Add(callDto.Request{}).
+				Add(callDto.Response{}).
+				Add(stateDto.State{}).
+				Add(stateDto.Cursor{}).
+				Add(stateDto.Memory{}).
 				Add(graph.DBGraph{}).
 				Add(graph.DBNode{}).
 				Add(graph.DBEventCard{}).
@@ -47,10 +72,11 @@ var ts = &cobra.Command{
 				Add(graph.DataEventCard{}).
 				Add(graph.DataNode{}).
 				Add(graph.DataGraph{}).
-				Add(batchDto.SaveRequest{}).
-				Add(batchDto.SaveResponse{}).
-				Add(batchDto.DeleteRequest{}).
-				Add(batchDto.DeleteResponse{})
+				Add(searchDto.FindActiveRequest{}).
+				Add(searchDto.FindActiveResponse{}).
+				Add(searchDto.ActiveGraph{}).
+				Add(storageDto.ListGraphRequest{}).
+				Add(storageDto.ListGraphResponse{})
 
 		err := converter.ConvertToFile("ts/models.ts")
 		if err != nil {

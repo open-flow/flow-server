@@ -559,11 +559,9 @@ paths:
       parameters:
       - description: project ids
         in: query
-        items:
-          type: integer
         name: projectId
         required: true
-        type: array
+        type: integer
       produces:
       - application/json
       responses:

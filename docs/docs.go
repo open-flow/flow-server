@@ -380,10 +380,7 @@ var doc = `{
                 "operationId": "ListEndpoint",
                 "parameters": [
                     {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
+                        "type": "integer",
                         "description": "project ids",
                         "name": "projectId",
                         "in": "query",

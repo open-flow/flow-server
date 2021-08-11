@@ -1,13 +1,13 @@
 package http
 
 import (
-	"autoflow/pkg/entities/batch"
-	"autoflow/pkg/entities/common"
-	"autoflow/pkg/entities/endpoint"
-	"autoflow/pkg/entities/engine"
-	"autoflow/pkg/entities/graph"
-	"autoflow/pkg/entities/search"
-	"autoflow/pkg/entities/storage"
+	"autoflow/pkg/common"
+	"autoflow/pkg/engine/call"
+	"autoflow/pkg/storage/batch"
+	"autoflow/pkg/storage/endpoint"
+	"autoflow/pkg/storage/graph"
+	"autoflow/pkg/storage/search"
+	"autoflow/pkg/storage/storage"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +21,7 @@ import (
 // @Router /call [post]
 func (c *Controller) Call(g *gin.Context) {
 	c.DoCall(g, c.callback.Call, func() (interface{}, error) {
-		obj := engine.Request{}
+		obj := &call.Request{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -181,7 +181,7 @@ func (c *Controller) SaveEventCard(g *gin.Context) {
 // @Router /graph [delete]
 func (c *Controller) DeleteGraph(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteGraph, func() (interface{}, error) {
-		obj := &graph.IDGraph{}
+		obj := &common.IDProject{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -237,7 +237,7 @@ func (c *Controller) DeleteEventCard(g *gin.Context) {
 // @Id ListEndpoint
 // @Accept  json
 // @Produce  json
-// @Param projectId query []int true "project ids"
+// @Param projectId query int true "project ids"
 // @Success 200 {object} endpoint.Container
 // @Router /list-module [get]
 func (c *Controller) ListEndpoint(g *gin.Context) {
