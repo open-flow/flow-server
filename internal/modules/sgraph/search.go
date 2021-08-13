@@ -1,4 +1,4 @@
-package search
+package sgraph
 
 import (
 	"autoflow/pkg/storage/graph"
@@ -9,17 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type Service struct {
+type Active struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) *Service {
-	return &Service{
+func NewActive(db *gorm.DB) *Active {
+	return &Active{
 		db: db,
 	}
 }
 
-func (s *Service) FindActive(ctx context.Context, req *search.FindActiveRequest) (*search.FindActiveResponse, error) {
+func (s *Active) FindActive(ctx context.Context, req *search.FindActiveRequest) (*search.FindActiveResponse, error) {
 	if req.OwnerType == "" || req.OwnerId == "" {
 		return nil, fmt.Errorf("owner_type and owner_id are mandatory")
 	}

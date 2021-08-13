@@ -3,11 +3,9 @@ package http
 import (
 	_ "autoflow/docs"
 	"autoflow/internal/infra"
-	"autoflow/internal/modules/engine/callback"
-	"autoflow/internal/modules/storage/batch"
-	"autoflow/internal/modules/storage/endpoint"
-	"autoflow/internal/modules/storage/search"
-	"autoflow/internal/modules/storage/storage"
+	"autoflow/internal/modules/scallback"
+	"autoflow/internal/modules/sendpoint"
+	"autoflow/internal/modules/sgraph"
 	"autoflow/pkg/common"
 	"context"
 	"github.com/gin-gonic/gin"
@@ -21,13 +19,13 @@ import (
 )
 
 type Controller struct {
-	batch    *batch.Service
-	storage  *storage.Service
-	callback *callback.Service
-	search   *search.Service
+	batch    *sgraph.GraphBatch
+	storage  *sgraph.Graph
+	callback *scallback.Callback
+	search   *sgraph.Active
 	logger   *zap.Logger
 	gin      *gin.Engine
-	endpoint *endpoint.Controller
+	endpoint *sendpoint.Endpoint
 }
 
 // @title Flow server
@@ -37,12 +35,12 @@ type Controller struct {
 // @BasePath
 
 func NewController(
-	batchSvc *batch.Service,
-	storageSvc *storage.Service,
-	callbackSvc *callback.Service,
-	searchSvc *search.Service,
+	batchSvc *sgraph.GraphBatch,
+	storageSvc *sgraph.Graph,
+	callbackSvc *scallback.Callback,
+	searchSvc *sgraph.Active,
 	loggerSvc *zap.Logger,
-	endpointSvc *endpoint.Controller,
+	endpointSvc *sendpoint.Endpoint,
 	config *infra.FlowConfig,
 	lc fx.Lifecycle,
 ) *Controller {

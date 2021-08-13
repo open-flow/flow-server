@@ -1,36 +1,41 @@
-package registry
+package sendpoint
 
 import (
-	endpoint2 "autoflow/internal/modules/storage/endpoint"
+	"autoflow/internal/modules/serrors"
 	"autoflow/pkg/engine/call"
 	"autoflow/pkg/engine/state"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
+	"time"
 )
 
-type Service struct {
-	cache         *endpoint2.Cache
+type Registry struct {
+	cache         *EndpointCache
 	logger        *zap.SugaredLogger
 	resty         *resty.Client `name:"RegistryResty"`
-	endpointError *endpoint2.ErrorService
+	endpointError *serrors.Errors
 }
 
-func NewService(
-	cache *endpoint2.Cache,
+func NewRegistry(
+	cache *EndpointCache,
 	logger *zap.SugaredLogger,
-	resty *resty.Client,
-	endpointError *endpoint2.ErrorService,
-) (*Service, error) {
-	obj := &Service{
-		cache, logger, resty, endpointError,
+	endpointError *serrors.Errors,
+) (*Registry, error) {
+	obj := &Registry{
+		cache, logger, nil, endpointError,
 	}
+
+	obj.resty = resty.New().
+		SetRetryCount(3).
+		SetRetryWaitTime(5 * time.Second).
+		SetRetryMaxWaitTime(20 * time.Second)
 
 	obj.logger = obj.logger.With(zap.String("service", "registry"))
 
 	return obj, nil
 }
 
-func (s *Service) Call(st *state.State) (*call.Return, error) {
+func (s *Registry) Call(st *state.State) (*call.Return, error) {
 	container, err := s.cache.Get(st)
 	if err != nil {
 		return nil, err

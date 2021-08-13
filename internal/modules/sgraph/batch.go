@@ -1,4 +1,4 @@
-package batch
+package sgraph
 
 import (
 	"autoflow/pkg/common"
@@ -8,17 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service struct {
+type GraphBatch struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) *Service {
-	return &Service{
+func NewGraphBatch(db *gorm.DB) *GraphBatch {
+	return &GraphBatch{
 		db: db,
 	}
 }
 
-func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveResponse, error) {
+func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveResponse, error) {
 	g := &graph.DBGraph{}
 
 	cards := make([]*graph.DBEventCard, len(r.Cards))
@@ -100,7 +100,7 @@ func (s *Service) Save(ctx context.Context, r *batch.SaveRequest) (*batch.SaveRe
 	}, nil
 }
 
-func (s *Service) Delete(ctx context.Context, r *batch.DeleteRequest) error {
+func (s *GraphBatch) Delete(ctx context.Context, r *batch.DeleteRequest) error {
 	err := s.db.
 		Session(&gorm.Session{
 			Context:         ctx,

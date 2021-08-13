@@ -1,32 +1,32 @@
-package callback
+package scallback
 
 import (
-	"autoflow/internal/modules/engine/schedule"
-	"autoflow/internal/modules/storage/search"
+	"autoflow/internal/modules/sgraph"
+	"autoflow/internal/modules/sscheduler"
 	"autoflow/pkg/engine/call"
 	"autoflow/pkg/storage/graph"
-	searchDto "autoflow/pkg/storage/search"
+	"autoflow/pkg/storage/search"
 	"context"
 	"go.uber.org/zap"
 	"time"
 )
 
-type Service struct {
-	search    *search.Service
-	scheduler *schedule.Service
+type Callback struct {
+	search    *sgraph.Active
+	scheduler *sscheduler.Schedule
 	logger    *zap.Logger
 }
 
-func New(search *search.Service, scheduler *schedule.Service, logger *zap.Logger) *Service {
-	return &Service{
+func NewCallback(search *sgraph.Active, scheduler *sscheduler.Schedule, logger *zap.Logger) *Callback {
+	return &Callback{
 		search:    search,
 		scheduler: scheduler,
 		logger:    logger.With(zap.String("service", "callback")),
 	}
 }
 
-func (s *Service) Call(ctx context.Context, req *call.Request) (*call.Response, error) {
-	active, err := s.search.FindActive(ctx, &searchDto.FindActiveRequest{
+func (s *Callback) Call(ctx context.Context, req *call.Request) (*call.Response, error) {
+	active, err := s.search.FindActive(ctx, &search.FindActiveRequest{
 		DataEvent: req.Event,
 	})
 
@@ -36,7 +36,7 @@ func (s *Service) Call(ctx context.Context, req *call.Request) (*call.Response, 
 	}
 
 	var currentVote uint = 0
-	var responseActive *searchDto.ActiveGraph
+	var responseActive *search.ActiveGraph
 	var responseActiveCard *graph.DBEventCard
 
 	for _, ag := range active.Graphs {

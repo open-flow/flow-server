@@ -1,7 +1,7 @@
-package endpoint
+package sendpoint
 
 import (
-	"autoflow/internal/modules/storage/repo"
+	"autoflow/internal/modules/srepo"
 	"autoflow/pkg/common"
 	"autoflow/pkg/storage/endpoint"
 	"context"
@@ -13,21 +13,23 @@ import (
 	"time"
 )
 
-func (c *Cache) ScheduleRefresh(id common.ByProject) {
+func (c *EndpointCache) ScheduleRefresh(id common.ByProject) {
 	c.logger.Info("scheduling sync")
 	go func() {
 		_ = c.Refresh(context.Background(), id)
 	}()
 }
 
-func (c *Cache) Refresh(ctx context.Context, id common.ByProject) error {
+func (c *EndpointCache) Refresh(ctx context.Context, id common.ByProject) error {
 	logger := c.logger.With(zap.Uint("projectId", id.GetProjectId()))
 	lock, err := c.locker.Obtain(ctx, lockKey(id), time.Millisecond*50, &redislock.Options{})
 	if err != nil {
 		logger.Error("failed to obtain lock", zap.Error(err))
 		return err
 	}
-	defer lock.Release(ctx)
+	defer func() {
+		_ = lock.Release(ctx)
+	}()
 
 	var endpoints []*endpoint.DBEndpoint
 	err = c.repo.ListProjectObjects(ctx, id, &endpoints)
@@ -59,7 +61,7 @@ func (c *Cache) Refresh(ctx context.Context, id common.ByProject) error {
 	return nil
 }
 
-func (c *Cache) Get(id common.ByProject) (*endpoint.Container, error) {
+func (c *EndpointCache) Get(id common.ByProject) (*endpoint.Container, error) {
 	container := &endpoint.Container{}
 	err := c.cache.Get(context.Background(), key(id), container)
 	if err == cache.ErrCacheMiss {
@@ -76,22 +78,22 @@ func (c *Cache) Get(id common.ByProject) (*endpoint.Container, error) {
 	return container, nil
 }
 
-type Cache struct {
+type EndpointCache struct {
 	logger *zap.SugaredLogger
 	cache  *cache.Cache
 	redis  *redis.Ring
 	locker *redislock.Client
-	repo   *repo.Service
+	repo   *srepo.Repo
 }
 
-func NewCache(
+func NewEndpointCache(
 	logger *zap.SugaredLogger,
 	cache *cache.Cache,
 	redis *redis.Ring,
 	locker *redislock.Client,
-	repo *repo.Service,
-) (*Cache, error) {
-	obj := &Cache{
+	repo *srepo.Repo,
+) (*EndpointCache, error) {
+	obj := &EndpointCache{
 		logger, cache, redis, locker, repo,
 	}
 	obj.logger = obj.logger.With(zap.String("cache", "endpoint"))

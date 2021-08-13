@@ -1,4 +1,4 @@
-package schedule
+package sscheduler
 
 import (
 	"autoflow/pkg/engine/call"
@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *Service) run(st *state.State, ch chan *call.Response) {
+func (s *Schedule) run(st *state.State, ch chan *call.Response) {
 LOOP:
 	for {
 		nextLen := len(st.Cursor.Next)
@@ -89,7 +89,7 @@ LOOP:
 	}
 }
 
-func (s *Service) fork(st *state.State) {
+func (s *Schedule) fork(st *state.State) {
 	for _, c := range st.Cursor.Next {
 		var stateCopy state.State
 		err := utils.DeepCopy(&stateCopy, st)

@@ -1,7 +1,7 @@
-package storage
+package sgraph
 
 import (
-	"autoflow/internal/modules/storage/repo"
+	"autoflow/internal/modules/srepo"
 	"autoflow/pkg/common"
 	"autoflow/pkg/storage/graph"
 	"autoflow/pkg/storage/storage"
@@ -9,23 +9,23 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service struct {
+type Graph struct {
 	db   *gorm.DB
-	repo *repo.Service
+	repo *srepo.Repo
 }
 
-func New(
+func NewGraph(
 	db *gorm.DB,
-	repo *repo.Service,
-) *Service {
-	svc := &Service{
+	repo *srepo.Repo,
+) *Graph {
+	svc := &Graph{
 		db, repo,
 	}
 
 	return svc
 }
 
-func (s *Service) SaveGraph(c context.Context, data *graph.DBGraph) (*graph.DBGraph, error) {
+func (s *Graph) SaveGraph(c context.Context, data *graph.DBGraph) (*graph.DBGraph, error) {
 	entity := &graph.DBGraph{}
 	err := s.repo.SaveProjectObject(c, data, entity)
 	if err != nil {
@@ -34,7 +34,7 @@ func (s *Service) SaveGraph(c context.Context, data *graph.DBGraph) (*graph.DBGr
 	return entity, nil
 }
 
-func (s *Service) SaveNode(c context.Context, node *graph.DBNode) (*graph.DBNode, error) {
+func (s *Graph) SaveNode(c context.Context, node *graph.DBNode) (*graph.DBNode, error) {
 	entity := &graph.DBNode{}
 	err := s.repo.SaveGraphObject(c, node, entity)
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *Service) SaveNode(c context.Context, node *graph.DBNode) (*graph.DBNode
 	return entity, nil
 }
 
-func (s *Service) SaveEventCard(c context.Context, card *graph.DBEventCard) (*graph.DBEventCard, error) {
+func (s *Graph) SaveEventCard(c context.Context, card *graph.DBEventCard) (*graph.DBEventCard, error) {
 	entity := &graph.DBEventCard{}
 	err := s.repo.SaveGraphObject(c, card, entity)
 	if err != nil {
@@ -52,7 +52,7 @@ func (s *Service) SaveEventCard(c context.Context, card *graph.DBEventCard) (*gr
 	return entity, nil
 }
 
-func (s *Service) SaveConnection(c context.Context, connection *graph.DBConnection) (*graph.DBConnection, error) {
+func (s *Graph) SaveConnection(c context.Context, connection *graph.DBConnection) (*graph.DBConnection, error) {
 	entity := &graph.DBConnection{}
 	err := s.repo.SaveGraphObject(c, connection, entity)
 	if err != nil {
@@ -61,23 +61,23 @@ func (s *Service) SaveConnection(c context.Context, connection *graph.DBConnecti
 	return entity, nil
 }
 
-func (s *Service) DeleteGraph(c context.Context, request *common.IDProject) error {
+func (s *Graph) DeleteGraph(c context.Context, request *common.IDProject) error {
 	return s.repo.DeleteProjectObject(c, request, &graph.DBGraph{})
 }
 
-func (s *Service) DeleteNode(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteNode(c context.Context, request *graph.IDGraph) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBNode{})
 }
 
-func (s *Service) DeleteEventCard(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteEventCard(c context.Context, request *graph.IDGraph) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBEventCard{})
 }
 
-func (s *Service) DeleteConnection(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteConnection(c context.Context, request *graph.IDGraph) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBConnection{})
 }
 
-func (s *Service) GetGraph(c context.Context, r *common.IDProject) (*graph.DBGraph, error) {
+func (s *Graph) GetGraph(c context.Context, r *common.IDProject) (*graph.DBGraph, error) {
 	g := &graph.DBGraph{}
 	err := s.repo.GetProjectObject(c, r, g)
 	if err != nil {
@@ -86,7 +86,7 @@ func (s *Service) GetGraph(c context.Context, r *common.IDProject) (*graph.DBGra
 	return g, nil
 }
 
-func (s *Service) ListGraph(c context.Context, r *storage.ListGraphRequest) (*storage.ListGraphResponse, error) {
+func (s *Graph) ListGraph(c context.Context, r *storage.ListGraphRequest) (*storage.ListGraphResponse, error) {
 	var graphs []graph.DBGraph
 
 	err := s.db.

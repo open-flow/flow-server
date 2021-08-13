@@ -1,18 +1,18 @@
-package logger
+package serrors
 
 import (
 	"autoflow/pkg/common"
 	"go.uber.org/zap"
 )
 
-type Service struct {
+type Logger struct {
 	logger *zap.SugaredLogger
 }
 
-func NewService(
+func NewLogger(
 	logger *zap.SugaredLogger,
-) (*Service, error) {
-	obj := &Service{
+) (*Logger, error) {
+	obj := &Logger{
 		logger,
 	}
 
@@ -21,6 +21,6 @@ func NewService(
 	return obj, nil
 }
 
-func (s *Service) Error(id common.ByProject, message string, data interface{}) {
+func (s *Logger) Error(id common.ByProject, message string, data interface{}) {
 
 }

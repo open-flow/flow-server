@@ -1,7 +1,7 @@
-package endpoint
+package sendpoint
 
 import (
-	"autoflow/internal/modules/storage/repo"
+	"autoflow/internal/modules/srepo"
 	"autoflow/pkg/common"
 	"autoflow/pkg/storage/endpoint"
 	"context"
@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *Controller) Save(ctx context.Context, req *endpoint.DBEndpoint) (*endpoint.DBEndpoint, error) {
+func (r *Endpoint) Save(ctx context.Context, req *endpoint.DBEndpoint) (*endpoint.DBEndpoint, error) {
 	entity := &endpoint.DBEndpoint{}
 	err := r.repo.SaveProjectObject(ctx, req, entity)
 	if err != nil {
@@ -19,7 +19,7 @@ func (r *Controller) Save(ctx context.Context, req *endpoint.DBEndpoint) (*endpo
 	return entity, nil
 }
 
-func (r *Controller) Delete(ctx context.Context, req *common.IDProject) error {
+func (r *Endpoint) Delete(ctx context.Context, req *common.IDProject) error {
 	entity := &endpoint.DBEndpoint{}
 	err := r.repo.DeleteProjectObject(ctx, req, entity)
 	if err != nil {
@@ -29,24 +29,24 @@ func (r *Controller) Delete(ctx context.Context, req *common.IDProject) error {
 	return nil
 }
 
-func (r *Controller) List(_ context.Context, req common.ByProject) (*endpoint.Container, error) {
+func (r *Endpoint) List(_ context.Context, req common.ByProject) (*endpoint.Container, error) {
 	return r.cache.Get(req)
 }
 
-type Controller struct {
-	repo   *repo.Service
+type Endpoint struct {
+	repo   *srepo.Repo
 	logger *zap.Logger
 	db     *gorm.DB
-	cache  *Cache
+	cache  *EndpointCache
 }
 
-func NewController(
-	repo *repo.Service,
+func NewEndpoint(
+	repo *srepo.Repo,
 	logger *zap.Logger,
 	db *gorm.DB,
-	cache *Cache,
-) (*Controller, error) {
-	svc := &Controller{
+	cache *EndpointCache,
+) (*Endpoint, error) {
+	svc := &Endpoint{
 		repo, logger, db, cache,
 	}
 	return svc, nil

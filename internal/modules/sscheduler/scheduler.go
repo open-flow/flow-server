@@ -1,7 +1,7 @@
-package schedule
+package sscheduler
 
 import (
-	"autoflow/internal/modules/engine/registry"
+	"autoflow/internal/modules/sendpoint"
 	"autoflow/pkg/engine/call"
 	"autoflow/pkg/engine/state"
 	"autoflow/pkg/storage/graph"
@@ -9,19 +9,19 @@ import (
 	"go.uber.org/zap"
 )
 
-type Service struct {
-	Registry *registry.Service
+type Schedule struct {
+	Registry *sendpoint.Registry
 	logger   *zap.Logger
 }
 
-func New(regSvc *registry.Service, logger *zap.Logger) *Service {
-	return &Service{
+func NewSchedule(regSvc *sendpoint.Registry, logger *zap.Logger) *Schedule {
+	return &Schedule{
 		Registry: regSvc,
 		logger:   logger.With(zap.String("service", "ScheduleService")),
 	}
 }
 
-func (s *Service) Schedule(
+func (s *Schedule) Schedule(
 	req *call.Request,
 	ag *search.ActiveGraph,
 	ac *graph.DBEventCard,

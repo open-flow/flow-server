@@ -1,7 +1,7 @@
-package endpoint
+package serrors
 
 import (
-	"autoflow/internal/modules/storage/repo"
+	"autoflow/internal/modules/srepo"
 	"autoflow/pkg/common"
 	"autoflow/pkg/engine/state"
 	"autoflow/pkg/storage/endpoint"
@@ -11,16 +11,16 @@ import (
 	"time"
 )
 
-type ErrorService struct {
+type Errors struct {
 	logger *zap.SugaredLogger
-	repo   *repo.Service
+	repo   *srepo.Repo
 }
 
-func NewErrorService(
+func NewErrors(
 	logger *zap.SugaredLogger,
-	repo *repo.Service,
-) (*ErrorService, error) {
-	obj := &ErrorService{
+	repo *srepo.Repo,
+) (*Errors, error) {
+	obj := &Errors{
 		logger, repo,
 	}
 
@@ -29,7 +29,7 @@ func NewErrorService(
 	return obj, nil
 }
 
-func (e *ErrorService) Error(state *state.State, res *resty.Response, resErr error) {
+func (e *Errors) Error(state *state.State, res *resty.Response, resErr error) {
 	e.logger.Info(
 		"endpoint error",
 		zap.Uint("projectId", state.GetProjectId()),
