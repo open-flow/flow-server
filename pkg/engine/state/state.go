@@ -4,13 +4,14 @@ import (
 	"autoflow/pkg/storage/graph"
 )
 
+// swagger:model
 type State struct {
 	Graph      *graph.DBGraph     `json:"graph"`
 	Card       *graph.DBEventCard `json:"card"`
 	RawRequest interface{}        `json:"rawRequest"`
 
-	*Cursor `json:"cursor"`
-	*Memory `json:"memory"`
+	Cursor *Cursor `json:"cursor"`
+	Memory *Memory `json:"memory"`
 }
 
 func (s *State) GetProjectId() uint {

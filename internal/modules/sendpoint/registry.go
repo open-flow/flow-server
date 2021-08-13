@@ -4,6 +4,7 @@ import (
 	"autoflow/internal/modules/serrors"
 	"autoflow/pkg/engine/call"
 	"autoflow/pkg/engine/state"
+	"errors"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
 	"time"
@@ -40,18 +41,18 @@ func (s *Registry) Call(st *state.State) (*call.Return, error) {
 	if err != nil {
 		return nil, err
 	}
-	endp, found := container.Map[st.Module()]
+	endp, found := container.Map[st.Cursor.Module()]
 	if !found {
-		s.logger.Error("not found", zap.String("module", st.Module()))
-		return nil, state.ErrorModuleNotFound
+		s.logger.Error("not found", zap.String("module", st.Cursor.Module()))
+		return nil, errors.New("module not found")
 	}
 
 	result := &call.Return{}
 	response, err := s.resty.R().
 		SetHeaders(endp.Headers).
 		SetQueryParamsFromValues(endp.Values).
-		SetPathParam("function", st.Function()).
-		SetQueryParam("function", st.Function()).
+		SetPathParam("function", st.Cursor.Function()).
+		SetQueryParam("function", st.Cursor.Function()).
 		SetResult(result).
 		Post(endp.Uri)
 	if err != nil {
