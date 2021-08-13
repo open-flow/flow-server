@@ -61,7 +61,7 @@ func (s *Graph) SaveConnection(c context.Context, connection *graph.DBConnection
 	return entity, nil
 }
 
-func (s *Graph) DeleteGraph(c context.Context, request *common.IDProject) error {
+func (s *Graph) DeleteGraph(c context.Context, request *common.ProjectModel) error {
 	return s.repo.DeleteProjectObject(c, request, &graph.DBGraph{})
 }
 
@@ -77,7 +77,7 @@ func (s *Graph) DeleteConnection(c context.Context, request *graph.IDGraph) erro
 	return s.repo.DeleteGraphObject(c, request, &graph.DBConnection{})
 }
 
-func (s *Graph) GetGraph(c context.Context, r *common.IDProject) (*graph.DBGraph, error) {
+func (s *Graph) GetGraph(c context.Context, r *common.ProjectModel) (*graph.DBGraph, error) {
 	g := &graph.DBGraph{}
 	err := s.repo.GetProjectObject(c, r, g)
 	if err != nil {

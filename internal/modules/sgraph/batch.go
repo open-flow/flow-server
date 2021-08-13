@@ -26,7 +26,7 @@ func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.Sav
 	connections := make([]*graph.DBConnection, len(r.Connections))
 
 	idGraph := graph.IDGraph{
-		IDProject: common.IDProject{
+		ProjectModel: common.ProjectModel{
 			ProjectId: r.ProjectId,
 		},
 		GraphId: r.Id,
@@ -93,10 +93,10 @@ func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.Sav
 	}
 
 	return &batch.SaveResponse{
-		IDProject:   r.IDProject,
-		Nodes:       nodes,
-		Cards:       cards,
-		Connections: connections,
+		ProjectModel: r.ProjectModel,
+		Nodes:        nodes,
+		Cards:        cards,
+		Connections:  connections,
 	}, nil
 }
 

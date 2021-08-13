@@ -50,8 +50,8 @@ var ts = &cobra.Command{
 				Add(endpoint.DBError{}).
 				Add(endpoint.DataError{}).
 				Add(endpoint.Container{}).
-				Add(common.IDProject{}).
-				Add(common.ByProjectId{}).
+				Add(common.ProjectModel{}).
+				Add(common.ProjectSpace{}).
 				Add(call.Action{}).
 				Add(call.Error{}).
 				Add(call.Return{}).

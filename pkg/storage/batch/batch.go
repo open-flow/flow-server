@@ -6,7 +6,7 @@ import (
 )
 
 type SaveRequest struct {
-	common.IDProject
+	common.ProjectModel
 
 	Nodes       []graph.DBNode       `json:"nodes"`
 	Cards       []graph.DBEventCard  `json:"cards"`
@@ -14,7 +14,7 @@ type SaveRequest struct {
 }
 
 type SaveResponse struct {
-	common.IDProject
+	common.ProjectModel
 
 	Nodes       []*graph.DBNode       `json:"nodes"`
 	Cards       []*graph.DBEventCard  `json:"cards"`
@@ -22,7 +22,7 @@ type SaveResponse struct {
 }
 
 type DeleteRequest struct {
-	common.IDProject
+	common.ProjectModel
 
 	Nodes       []uint64 `json:"nodes"`
 	Cards       []uint64 `json:"cards"`

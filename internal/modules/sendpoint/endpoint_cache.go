@@ -13,14 +13,14 @@ import (
 	"time"
 )
 
-func (c *EndpointCache) ScheduleRefresh(id common.ByProject) {
+func (c *EndpointCache) ScheduleRefresh(id common.SpacedObject) {
 	c.logger.Info("scheduling sync")
 	go func() {
 		_ = c.Refresh(context.Background(), id)
 	}()
 }
 
-func (c *EndpointCache) Refresh(ctx context.Context, id common.ByProject) error {
+func (c *EndpointCache) Refresh(ctx context.Context, id common.SpacedObject) error {
 	logger := c.logger.With(zap.Uint("projectId", id.GetProjectId()))
 	lock, err := c.locker.Obtain(ctx, lockKey(id), time.Millisecond*50, &redislock.Options{})
 	if err != nil {
@@ -61,7 +61,7 @@ func (c *EndpointCache) Refresh(ctx context.Context, id common.ByProject) error 
 	return nil
 }
 
-func (c *EndpointCache) Get(id common.ByProject) (*endpoint.Container, error) {
+func (c *EndpointCache) Get(id common.SpacedObject) (*endpoint.Container, error) {
 	container := &endpoint.Container{}
 	err := c.cache.Get(context.Background(), key(id), container)
 	if err == cache.ErrCacheMiss {
@@ -100,9 +100,9 @@ func NewEndpointCache(
 	return obj, nil
 }
 
-func key(id common.ByProject) string {
+func key(id common.SpacedObject) string {
 	return fmt.Sprintf("endpoint.project.%d", id.GetProjectId())
 }
-func lockKey(id common.ByProject) string {
+func lockKey(id common.SpacedObject) string {
 	return fmt.Sprintf("endpoint.project.%d.lock", id.GetProjectId())
 }

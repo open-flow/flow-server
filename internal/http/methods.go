@@ -181,7 +181,7 @@ func (c *Controller) SaveEventCard(g *gin.Context) {
 // @Router /graph [delete]
 func (c *Controller) DeleteGraph(g *gin.Context) {
 	c.DoCall(g, c.storage.DeleteGraph, func() (interface{}, error) {
-		obj := &common.IDProject{}
+		obj := &common.ProjectModel{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})
@@ -242,7 +242,7 @@ func (c *Controller) DeleteEventCard(g *gin.Context) {
 // @Router /list-module [get]
 func (c *Controller) ListEndpoint(g *gin.Context) {
 	c.DoCall(g, c.endpoint.List, func() (interface{}, error) {
-		obj := &common.IDProject{}
+		obj := &common.ProjectModel{}
 		err := g.BindQuery(obj)
 		return obj, err
 	})
@@ -269,11 +269,11 @@ func (c *Controller) SaveEndpoint(g *gin.Context) {
 // @Id DeleteEndpoint
 // @Accept  json
 // @Produce  json
-// @Param request body common.IDProject true "request"
+// @Param request body common.ProjectModel true "request"
 // @Router /module [delete]
 func (c *Controller) DeleteEndpoint(g *gin.Context) {
 	c.DoCall(g, c.endpoint.Delete, func() (interface{}, error) {
-		obj := &common.IDProject{}
+		obj := &common.ProjectModel{}
 		err := g.BindJSON(obj)
 		return obj, err
 	})

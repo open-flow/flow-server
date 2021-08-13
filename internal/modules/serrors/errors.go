@@ -37,7 +37,7 @@ func (e *Errors) Error(state *state.State, res *resty.Response, resErr error) {
 
 	//TODO Fill values properly
 	save := &endpoint.DBError{
-		IDProject: common.IDProject{
+		ProjectModel: common.ProjectModel{
 			ProjectId: state.GetProjectId(),
 		},
 		DataError: endpoint.DataError{

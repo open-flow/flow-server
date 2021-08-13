@@ -6,7 +6,6 @@ import (
 	"autoflow/internal/modules/scallback"
 	"autoflow/internal/modules/sendpoint"
 	"autoflow/internal/modules/sgraph"
-	"autoflow/pkg/common"
 	"context"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -130,7 +129,7 @@ func (c *Controller) DoCall(g *gin.Context, method interface{}, bind func() (int
 		err := errInf.(error)
 		logger.Error("service error", zap.Error(err))
 		_ = g.Error(err)
-		g.JSON(http.StatusInternalServerError, common.HttpError{
+		g.JSON(http.StatusInternalServerError, HttpError{
 			Message: err.Error(),
 		})
 		return

@@ -3,7 +3,7 @@ package graph
 import "autoflow/pkg/common"
 
 type IDGraph struct {
-	common.IDProject
+	common.ProjectModel
 	GraphId uint `gorm:"index" json:"graphId,omitempty"`
 }
 
@@ -12,7 +12,7 @@ func (i *IDGraph) GetGraphId() uint {
 }
 
 type DBGraph struct {
-	common.IDProject
+	common.ProjectModel
 
 	common.DataUI
 	DataGraph

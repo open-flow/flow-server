@@ -443,7 +443,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/common.IDProject"
+                            "$ref": "#/definitions/common.ProjectModel"
                         }
                     }
                 ]
@@ -593,7 +593,7 @@ var doc = `{
                 }
             }
         },
-        "common.IDProject": {
+        "common.ProjectModel": {
             "type": "object",
             "properties": {
                 "id": {

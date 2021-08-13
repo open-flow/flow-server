@@ -21,6 +21,6 @@ func NewLogger(
 	return obj, nil
 }
 
-func (s *Logger) Error(id common.ByProject, message string, data interface{}) {
+func (s *Logger) Error(id common.SpacedObject, message string, data interface{}) {
 
 }

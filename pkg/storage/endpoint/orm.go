@@ -7,7 +7,7 @@ import (
 )
 
 type DBEndpoint struct {
-	common.IDProject
+	common.ProjectModel
 	DataEndpoint
 }
 
@@ -24,7 +24,7 @@ type DataEndpoint struct {
 }
 
 type DBError struct {
-	common.IDProject
+	common.ProjectModel
 	DataError
 }
 

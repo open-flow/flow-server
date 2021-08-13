@@ -1,26 +1,34 @@
 package common
 
-type IDProject struct {
+type ProjectModel struct {
 	ProjectId uint `json:"projectId,omitempty" form:"projectId"`
 	Id        uint `gorm:"primaryKey,omitempty" json:"id,omitempty" form:"id"`
 }
 
-var _ ProjectObject = (*IDProject)(nil)
-
-func (p *IDProject) GetId() uint {
-	return p.Id
-}
-
-func (p *IDProject) GetProjectId() uint {
-	return p.ProjectId
-}
-
-type ByProjectId struct {
+type ProjectSpace struct {
 	ProjectId uint `json:"projectId" form:"projectId"`
 }
 
-var _ ByProject = (*ByProjectId)(nil)
+type ProjectObject interface {
+	SpacedObject
+	GetId() uint
+}
 
-func (b *ByProjectId) GetProjectId() uint {
+type SpacedObject interface {
+	GetProjectId() uint
+}
+
+var _ ProjectObject = (*ProjectModel)(nil)
+var _ SpacedObject = (*ProjectSpace)(nil)
+
+func (p *ProjectModel) GetId() uint {
+	return p.Id
+}
+
+func (p *ProjectModel) GetProjectId() uint {
+	return p.ProjectId
+}
+
+func (b *ProjectSpace) GetProjectId() uint {
 	return b.ProjectId
 }

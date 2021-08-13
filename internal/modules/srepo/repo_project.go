@@ -59,7 +59,7 @@ func (s *Repo) GetProjectObject(ctx context.Context, object common.ProjectObject
 	return nil
 }
 
-func (s *Repo) DeleteProjectObject(ctx context.Context, id *common.IDProject, entity common.ProjectObject) error {
+func (s *Repo) DeleteProjectObject(ctx context.Context, id *common.ProjectModel, entity common.ProjectObject) error {
 	err := s.db.
 		Session(&gorm.Session{
 			Context: ctx,
@@ -84,7 +84,7 @@ func (s *Repo) DeleteProjectObject(ctx context.Context, id *common.IDProject, en
 	return nil
 }
 
-func (s *Repo) ListProjectObjects(ctx context.Context, id common.ByProject, target interface{}) error {
+func (s *Repo) ListProjectObjects(ctx context.Context, id common.SpacedObject, target interface{}) error {
 	err := s.db.
 		Session(&gorm.Session{
 			Context: ctx,

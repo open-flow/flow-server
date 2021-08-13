@@ -19,7 +19,7 @@ func (r *Endpoint) Save(ctx context.Context, req *endpoint.DBEndpoint) (*endpoin
 	return entity, nil
 }
 
-func (r *Endpoint) Delete(ctx context.Context, req *common.IDProject) error {
+func (r *Endpoint) Delete(ctx context.Context, req *common.ProjectModel) error {
 	entity := &endpoint.DBEndpoint{}
 	err := r.repo.DeleteProjectObject(ctx, req, entity)
 	if err != nil {
@@ -29,7 +29,7 @@ func (r *Endpoint) Delete(ctx context.Context, req *common.IDProject) error {
 	return nil
 }
 
-func (r *Endpoint) List(_ context.Context, req common.ByProject) (*endpoint.Container, error) {
+func (r *Endpoint) List(_ context.Context, req common.SpacedObject) (*endpoint.Container, error) {
 	return r.cache.Get(req)
 }
 
