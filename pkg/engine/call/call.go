@@ -12,6 +12,7 @@ type Action struct {
 	Freeze       string                 `json:"freeze,omitempty"`
 }
 
+//swagger:model endpointReturn
 type Return struct {
 	Error  *Error  `json:"error,omitempty"`
 	Action *Action `json:"action,omitempty"`

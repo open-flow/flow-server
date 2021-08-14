@@ -1,0 +1,29 @@
+swagger: "2.0"
+info:
+  title: Endpoint specification
+  description: Endpoint specification
+  version: 1.0.0
+host: localhost:8080
+schemes:
+  - http
+paths:
+  /{functionId}:
+    post:
+      summary: call function
+      parameters:
+        - in: path
+          description: function name
+          name: functionId
+          type: string
+          required: true
+        - in: body
+          description: execution state
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/endpointState'
+      responses:
+        200:
+          description: engine action
+          schema:
+            $ref: '#/definitions/endpointReturn'

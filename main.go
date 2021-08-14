@@ -4,7 +4,7 @@ import (
 	"autoflow/internal/cmd"
 )
 
-//go:generate swagger generate spec -m -i docs/source.yaml -o docs/swagger.yaml
+//go:generate swagger generate spec -c pkg.engine.* -m -i api/endpoint/source.yaml -o api/endpoint/swagger.yaml
 
 func main() {
 	cmd.Execute()
