@@ -3,7 +3,7 @@ package graph
 import "autoflow/pkg/common"
 
 type DBEventCard struct {
-	IDGraph
+	GraphObject
 
 	common.DataUI
 	DataEventCard

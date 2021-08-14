@@ -1,7 +1,7 @@
 package http
 
 import (
-	_ "autoflow/docs"
+	"autoflow/docs"
 	"autoflow/internal/infra"
 	"autoflow/internal/modules/scallback"
 	"autoflow/internal/modules/sendpoint"
@@ -27,12 +27,6 @@ type Controller struct {
 	endpoint *sendpoint.Endpoint
 }
 
-// @title Flow server
-// @version 1.0
-
-// @host localhost:8080
-// @BasePath
-
 func NewController(
 	batchSvc *sgraph.GraphBatch,
 	storageSvc *sgraph.Graph,
@@ -44,6 +38,9 @@ func NewController(
 	lc fx.Lifecycle,
 ) *Controller {
 	e := gin.New()
+
+	docs.SwaggerInfo.Host = config.HostName
+	docs.SwaggerInfo.Version = "0.0.1"
 
 	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -57,9 +54,9 @@ func NewController(
 		endpoint: endpointSvc,
 	}
 
-	e.POST("/call", c.Call)
+	e.POST("/callback", c.Callback)
 
-	e.GET("/list-graphs", c.ListGraph)
+	e.GET("/graph/list", c.ListGraph)
 	e.GET("/graph", c.GetGraph)
 	e.POST("/graph", c.SaveGraph)
 	e.DELETE("/graph", c.DeleteGraph)
@@ -78,9 +75,9 @@ func NewController(
 
 	e.POST("/find-active", c.FindActive)
 
-	e.GET("/list-module", c.ListEndpoint)
-	e.POST("/module", c.SaveEndpoint)
-	e.DELETE("/module", c.DeleteEndpoint)
+	e.GET("/endpoint/list", c.ListEndpoint)
+	e.POST("/endpoint", c.SaveEndpoint)
+	e.DELETE("/endpoint", c.DeleteEndpoint)
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {

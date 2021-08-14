@@ -18,8 +18,6 @@ definitions:
       projectId:
         type: integer
     type: object
-  batch.DeleteResponse:
-    type: object
   batch.SaveRequest:
     properties:
       cards:
@@ -58,7 +56,30 @@ definitions:
       projectId:
         type: integer
     type: object
-  common.IDProject:
+  call.CallbackRequest:
+    properties:
+      context:
+        additionalProperties: true
+        type: object
+      event:
+        $ref: '#/definitions/graph.DataEvent'
+      raw:
+        type: object
+    type: object
+  call.CallbackResponse:
+    properties:
+      error:
+        type: string
+      noExecutions:
+        type: boolean
+      response:
+        type: object
+      scheduled:
+        type: boolean
+      timeout:
+        type: boolean
+    type: object
+  common.ProjectModel:
     properties:
       id:
         type: integer
@@ -103,29 +124,6 @@ definitions:
             type: string
           type: array
         type: object
-    type: object
-  engine.Request:
-    properties:
-      context:
-        additionalProperties: true
-        type: object
-      event:
-        $ref: '#/definitions/graph.DataEvent'
-      raw:
-        type: object
-    type: object
-  engine.Response:
-    properties:
-      error:
-        type: string
-      noExecutions:
-        type: boolean
-      response:
-        type: object
-      scheduled:
-        type: boolean
-      timeout:
-        type: boolean
     type: object
   graph.DBConnection:
     properties:
@@ -266,7 +264,7 @@ definitions:
       staticType:
         type: string
     type: object
-  graph.IDGraph:
+  graph.GraphObject:
     properties:
       graphId:
         type: integer
@@ -328,170 +326,168 @@ info:
 paths:
   /batch:
     delete:
-      consumes:
-      - application/json
-      operationId: BatchDelete
       parameters:
-      - description: request
+      - description: delete request
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/batch.DeleteRequest'
-      produces:
-      - application/json
       responses:
         "200":
-          description: OK
+          description: ok
           schema:
-            $ref: '#/definitions/batch.DeleteResponse'
-      summary: deletes all Nodes, Connections and EventCards from the graph
+            type: string
     post:
-      consumes:
-      - application/json
-      operationId: BatchSave
       parameters:
-      - description: request
+      - description: save request
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/batch.SaveRequest'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/batch.SaveResponse'
-      summary: saves new Nodes, Connections and EventCards
-  /call:
+  /callback:
     post:
-      consumes:
-      - application/json
-      operationId: Call
       parameters:
-      - description: request
+      - description: callback
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/engine.Request'
-      produces:
-      - application/json
+          $ref: '#/definitions/call.CallbackRequest'
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/engine.Response'
-      summary: executes callback
+            $ref: '#/definitions/call.CallbackResponse'
   /connection:
     delete:
-      consumes:
-      - application/json
-      operationId: DeleteConnection
       parameters:
-      - description: request
+      - description: connection id
         in: body
-        name: request
+        name: body
         required: true
         schema:
-          $ref: '#/definitions/graph.IDGraph'
-      produces:
-      - application/json
-      summary: deletes Connection
+          $ref: '#/definitions/graph.GraphObject'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
     post:
-      consumes:
-      - application/json
-      operationId: SaveConnection
       parameters:
-      - description: request
+      - description: connection
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/graph.DBConnection'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/graph.DBConnection'
-      summary: saves or updates Connection
-  /event-card:
+  /endpoint:
     delete:
-      consumes:
-      - application/json
-      operationId: DeleteEventCard
       parameters:
-      - description: request
+      - description: endpoint id
         in: body
-        name: request
+        name: body
         required: true
         schema:
-          $ref: '#/definitions/graph.IDGraph'
-      produces:
-      - application/json
-      summary: deletes EventCard
+          $ref: '#/definitions/common.ProjectModel'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
     post:
-      consumes:
-      - application/json
-      operationId: SaveEventCard
       parameters:
-      - description: request
+      - description: endpoint
         in: body
-        name: request
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/endpoint.DBEndpoint'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.DBEndpoint'
+  /endpoint/list:
+    get:
+      parameters:
+      - description: project id
+        in: query
+        name: projectId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.Container'
+  /event-card:
+    delete:
+      parameters:
+      - description: event card id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/graph.GraphObject'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+    post:
+      parameters:
+      - description: connection
+        in: body
+        name: body
         required: true
         schema:
           $ref: '#/definitions/graph.DBEventCard'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/graph.DBEventCard'
-      summary: saves or updates EventCard
   /find-active:
     post:
-      consumes:
-      - application/json
-      operationId: FindActive
       parameters:
-      - description: request
+      - description: active event
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/search.FindActiveRequest'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/search.FindActiveResponse'
-      summary: finds graphs that would activate for event
   /graph:
     delete:
-      consumes:
-      - application/json
-      operationId: DeleteGraph
       parameters:
-      - description: request
+      - description: graph id
         in: body
-        name: request
+        name: body
         required: true
         schema:
-          $ref: '#/definitions/graph.IDGraph'
-      produces:
-      - application/json
-      summary: deletes graph and all related Nodes, Connections and EventCards
+          $ref: '#/definitions/common.ProjectModel'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
     get:
-      consumes:
-      - application/json
-      operationId: GetGraph
       parameters:
       - description: project id
         in: query
@@ -500,41 +496,29 @@ paths:
         type: integer
       - description: graph id
         in: query
-        name: id
+        name: graphId
         required: true
         type: integer
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/graph.DBGraph'
-      summary: gets graph with Nodes, Connections and EventCards
     post:
-      consumes:
-      - application/json
-      operationId: SaveGraph
       parameters:
-      - description: request
+      - description: graph
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/graph.DBGraph'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/graph.DBGraph'
-      summary: saves or updates graph. Nodes, Connections and EventCards are ignored
-  /list-graphs:
+  /graph/list:
     get:
-      consumes:
-      - application/json
-      operationId: ListGraph
       parameters:
       - description: project ids
         in: query
@@ -543,99 +527,36 @@ paths:
         name: projectId
         required: true
         type: array
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/storage.ListGraphResponse'
-      summary: lists graphs
-  /list-module:
-    get:
-      consumes:
-      - application/json
-      operationId: ListEndpoint
-      parameters:
-      - description: project ids
-        in: query
-        name: projectId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/endpoint.Container'
-      summary: lists endpoints
-  /module:
-    delete:
-      consumes:
-      - application/json
-      operationId: DeleteEndpoint
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/common.IDProject'
-      produces:
-      - application/json
-      summary: deletes Module
-    post:
-      consumes:
-      - application/json
-      operationId: SaveEndpoint
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/endpoint.DBEndpoint'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/endpoint.DBEndpoint'
-      summary: saves Module
   /node:
     delete:
-      consumes:
-      - application/json
-      operationId: DeleteNode
       parameters:
-      - description: request
+      - description: node id
         in: body
-        name: request
+        name: body
         required: true
         schema:
-          $ref: '#/definitions/graph.IDGraph'
-      produces:
-      - application/json
-      summary: deletes Node
+          $ref: '#/definitions/graph.GraphObject'
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
     post:
-      consumes:
-      - application/json
-      operationId: SaveNode
       parameters:
-      - description: request
+      - description: node
         in: body
-        name: request
+        name: body
         required: true
         schema:
           $ref: '#/definitions/graph.DBNode'
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/graph.DBNode'
-      summary: saves or updates node
 swagger: "2.0"

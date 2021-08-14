@@ -55,8 +55,8 @@ var ts = &cobra.Command{
 				Add(call.Action{}).
 				Add(call.Error{}).
 				Add(call.Return{}).
-				Add(call.Request{}).
-				Add(call.Response{}).
+				Add(call.CallbackRequest{}).
+				Add(call.CallbackResponse{}).
 				Add(state.State{}).
 				Add(state.Cursor{}).
 				Add(state.Memory{}).

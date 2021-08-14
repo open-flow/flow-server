@@ -3,7 +3,7 @@ package graph
 import "autoflow/pkg/common"
 
 type DBConnection struct {
-	IDGraph
+	GraphObject
 	common.DataUI
 	DataConnection
 }

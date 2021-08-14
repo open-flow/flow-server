@@ -62,7 +62,7 @@ func (s *Repo) GetGraphObject(ctx context.Context, object graph.Object, entity g
 	return nil
 }
 
-func (s *Repo) DeleteGraphObject(ctx context.Context, id *graph.IDGraph, entity graph.Object) error {
+func (s *Repo) DeleteGraphObject(ctx context.Context, id *graph.GraphObject, entity graph.Object) error {
 	err := s.db.
 		Session(&gorm.Session{
 			Context: ctx,

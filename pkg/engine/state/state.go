@@ -4,7 +4,6 @@ import (
 	"autoflow/pkg/storage/graph"
 )
 
-// swagger:model
 type State struct {
 	Graph      *graph.DBGraph     `json:"graph"`
 	Card       *graph.DBEventCard `json:"card"`

@@ -25,7 +25,7 @@ func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.Sav
 	nodes := make([]*graph.DBNode, len(r.Nodes))
 	connections := make([]*graph.DBConnection, len(r.Connections))
 
-	idGraph := graph.IDGraph{
+	idGraph := graph.GraphObject{
 		ProjectModel: common.ProjectModel{
 			ProjectId: r.ProjectId,
 		},
@@ -34,7 +34,7 @@ func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.Sav
 
 	for i, c := range r.Cards {
 		cards[i] = &graph.DBEventCard{
-			IDGraph:       idGraph,
+			GraphObject:   idGraph,
 			DataEventCard: c.DataEventCard,
 			DataUI:        c.DataUI,
 		}
@@ -42,15 +42,15 @@ func (s *GraphBatch) Save(ctx context.Context, r *batch.SaveRequest) (*batch.Sav
 
 	for i, c := range r.Nodes {
 		nodes[i] = &graph.DBNode{
-			IDGraph:  idGraph,
-			DataNode: c.DataNode,
-			DataUI:   c.DataUI,
+			GraphObject: idGraph,
+			DataNode:    c.DataNode,
+			DataUI:      c.DataUI,
 		}
 	}
 
 	for i, c := range r.Connections {
 		connections[i] = &graph.DBConnection{
-			IDGraph:        idGraph,
+			GraphObject:    idGraph,
 			DataConnection: c.DataConnection,
 			DataUI:         c.DataUI,
 		}

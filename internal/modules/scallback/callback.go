@@ -25,7 +25,7 @@ func NewCallback(search *sgraph.Active, scheduler *sscheduler.Schedule, logger *
 	}
 }
 
-func (s *Callback) Call(ctx context.Context, req *call.Request) (*call.Response, error) {
+func (s *Callback) Call(ctx context.Context, req *call.CallbackRequest) (*call.CallbackResponse, error) {
 	active, err := s.search.FindActive(ctx, &search.FindActiveRequest{
 		DataEvent: req.Event,
 	})
@@ -58,16 +58,16 @@ func (s *Callback) Call(ctx context.Context, req *call.Request) (*call.Response,
 	}
 
 	if responseActive != nil {
-		ch := make(chan *call.Response)
+		ch := make(chan *call.CallbackResponse)
 		s.scheduler.Schedule(req, responseActive, responseActiveCard, ch)
 		select {
 		case <-ctx.Done():
-			return &call.Response{
+			return &call.CallbackResponse{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
 		case <-time.After(30 * time.Second):
-			return &call.Response{
+			return &call.CallbackResponse{
 				Timeout: true,
 				Error:   "timeout reached",
 			}, nil
@@ -76,7 +76,7 @@ func (s *Callback) Call(ctx context.Context, req *call.Request) (*call.Response,
 		}
 	}
 
-	return &call.Response{
+	return &call.CallbackResponse{
 		Scheduled: true,
 	}, nil
 }

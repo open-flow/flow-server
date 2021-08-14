@@ -65,15 +65,15 @@ func (s *Graph) DeleteGraph(c context.Context, request *common.ProjectModel) err
 	return s.repo.DeleteProjectObject(c, request, &graph.DBGraph{})
 }
 
-func (s *Graph) DeleteNode(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteNode(c context.Context, request *graph.GraphObject) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBNode{})
 }
 
-func (s *Graph) DeleteEventCard(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteEventCard(c context.Context, request *graph.GraphObject) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBEventCard{})
 }
 
-func (s *Graph) DeleteConnection(c context.Context, request *graph.IDGraph) error {
+func (s *Graph) DeleteConnection(c context.Context, request *graph.GraphObject) error {
 	return s.repo.DeleteGraphObject(c, request, &graph.DBConnection{})
 }
 

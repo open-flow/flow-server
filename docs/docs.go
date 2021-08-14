@@ -26,18 +26,10 @@ var doc = `{
     "paths": {
         "/batch": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves new Nodes, Connections and EventCards",
-                "operationId": "BatchSave",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "save request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -55,18 +47,10 @@ var doc = `{
                 }
             },
             "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes all Nodes, Connections and EventCards from the graph",
-                "operationId": "BatchDelete",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "delete request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -76,32 +60,24 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "ok",
                         "schema": {
-                            "$ref": "#/definitions/batch.DeleteResponse"
+                            "type": "string"
                         }
                     }
                 }
             }
         },
-        "/call": {
+        "/callback": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "executes callback",
-                "operationId": "Call",
                 "parameters": [
                     {
-                        "description": "request",
+                        "description": "callback",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/engine.Request"
+                            "$ref": "#/definitions/call.CallbackRequest"
                         }
                     }
                 ],
@@ -109,7 +85,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/engine.Response"
+                            "$ref": "#/definitions/call.CallbackResponse"
                         }
                     }
                 }
@@ -117,18 +93,10 @@ var doc = `{
         },
         "/connection": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves or updates Connection",
-                "operationId": "SaveConnection",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "connection",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -146,41 +114,98 @@ var doc = `{
                 }
             },
             "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes Connection",
-                "operationId": "DeleteConnection",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "connection id",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/graph.IDGraph"
+                            "$ref": "#/definitions/graph.GraphObject"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/endpoint": {
+            "post": {
+                "parameters": [
+                    {
+                        "description": "endpoint",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/endpoint.DBEndpoint"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "description": "endpoint id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.ProjectModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/endpoint/list": {
+            "get": {
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "project id",
+                        "name": "projectId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/endpoint.Container"
+                        }
+                    }
+                }
             }
         },
         "/event-card": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves or updates EventCard",
-                "operationId": "SaveEventCard",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "connection",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -198,41 +223,33 @@ var doc = `{
                 }
             },
             "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes EventCard",
-                "operationId": "DeleteEventCard",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "event card id",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/graph.IDGraph"
+                            "$ref": "#/definitions/graph.GraphObject"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/find-active": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "finds graphs that would activate for event",
-                "operationId": "FindActive",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "active event",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -252,14 +269,6 @@ var doc = `{
         },
         "/graph": {
             "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "gets graph with Nodes, Connections and EventCards",
-                "operationId": "GetGraph",
                 "parameters": [
                     {
                         "type": "integer",
@@ -271,7 +280,7 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "graph id",
-                        "name": "id",
+                        "name": "graphId",
                         "in": "query",
                         "required": true
                     }
@@ -286,18 +295,10 @@ var doc = `{
                 }
             },
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves or updates graph. Nodes, Connections and EventCards are ignored",
-                "operationId": "SaveGraph",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "graph",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -315,37 +316,29 @@ var doc = `{
                 }
             },
             "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes graph and all related Nodes, Connections and EventCards",
-                "operationId": "DeleteGraph",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "graph id",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/graph.IDGraph"
+                            "$ref": "#/definitions/common.ProjectModel"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
-        "/list-graphs": {
+        "/graph/list": {
             "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "lists graphs",
-                "operationId": "ListGraph",
                 "parameters": [
                     {
                         "type": "array",
@@ -368,101 +361,12 @@ var doc = `{
                 }
             }
         },
-        "/list-module": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "lists endpoints",
-                "operationId": "ListEndpoint",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "project ids",
-                        "name": "projectId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/endpoint.Container"
-                        }
-                    }
-                }
-            }
-        },
-        "/module": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves Module",
-                "operationId": "SaveEndpoint",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/endpoint.DBEndpoint"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/endpoint.DBEndpoint"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes Module",
-                "operationId": "DeleteEndpoint",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/common.ProjectModel"
-                        }
-                    }
-                ]
-            }
-        },
         "/node": {
             "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "saves or updates node",
-                "operationId": "SaveNode",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "node",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -480,25 +384,25 @@ var doc = `{
                 }
             },
             "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "deletes Node",
-                "operationId": "DeleteNode",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
+                        "description": "node id",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/graph.IDGraph"
+                            "$ref": "#/definitions/graph.GraphObject"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     },
@@ -531,9 +435,6 @@ var doc = `{
                     "type": "integer"
                 }
             }
-        },
-        "batch.DeleteResponse": {
-            "type": "object"
         },
         "batch.SaveRequest": {
             "type": "object",
@@ -590,6 +491,41 @@ var doc = `{
                 },
                 "projectId": {
                     "type": "integer"
+                }
+            }
+        },
+        "call.CallbackRequest": {
+            "type": "object",
+            "properties": {
+                "context": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "event": {
+                    "$ref": "#/definitions/graph.DataEvent"
+                },
+                "raw": {
+                    "type": "object"
+                }
+            }
+        },
+        "call.CallbackResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "noExecutions": {
+                    "type": "boolean"
+                },
+                "response": {
+                    "type": "object"
+                },
+                "scheduled": {
+                    "type": "boolean"
+                },
+                "timeout": {
+                    "type": "boolean"
                 }
             }
         },
@@ -661,41 +597,6 @@ var doc = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "engine.Request": {
-            "type": "object",
-            "properties": {
-                "context": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "event": {
-                    "$ref": "#/definitions/graph.DataEvent"
-                },
-                "raw": {
-                    "type": "object"
-                }
-            }
-        },
-        "engine.Response": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                },
-                "noExecutions": {
-                    "type": "boolean"
-                },
-                "response": {
-                    "type": "object"
-                },
-                "scheduled": {
-                    "type": "boolean"
-                },
-                "timeout": {
-                    "type": "boolean"
                 }
             }
         },
@@ -908,7 +809,7 @@ var doc = `{
                 }
             }
         },
-        "graph.IDGraph": {
+        "graph.GraphObject": {
             "type": "object",
             "properties": {
                 "graphId": {

@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *Schedule) run(st *state.State, ch chan *call.Response) {
+func (s *Schedule) run(st *state.State, ch chan *call.CallbackResponse) {
 LOOP:
 	for {
 		nextLen := len(st.Cursor.Next)
@@ -37,7 +37,7 @@ LOOP:
 
 		if err != nil {
 			logger.Error("error calling function", zap.Error(err))
-			ch <- &call.Response{
+			ch <- &call.CallbackResponse{
 				Error: "Unknown Error",
 			}
 			return
@@ -45,7 +45,7 @@ LOOP:
 
 		if wrapper.Error != nil {
 			logger.Error("error response from call", zap.Any("response", wrapper))
-			ch <- &call.Response{
+			ch <- &call.CallbackResponse{
 				Error: wrapper.Error.Message,
 			}
 			return
@@ -79,7 +79,7 @@ LOOP:
 	}
 
 	if ch != nil {
-		ch <- &call.Response{
+		ch <- &call.CallbackResponse{
 			Response: st.Memory.Response,
 		}
 	}

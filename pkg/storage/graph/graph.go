@@ -2,12 +2,12 @@ package graph
 
 import "autoflow/pkg/common"
 
-type IDGraph struct {
+type GraphObject struct {
 	common.ProjectModel
 	GraphId uint `gorm:"index" json:"graphId,omitempty"`
 }
 
-func (i *IDGraph) GetGraphId() uint {
+func (i *GraphObject) GetGraphId() uint {
 	return i.GraphId
 }
 
@@ -31,4 +31,4 @@ type Object interface {
 	GetGraphId() uint
 }
 
-var _ Object = (*IDGraph)(nil)
+var _ Object = (*GraphObject)(nil)

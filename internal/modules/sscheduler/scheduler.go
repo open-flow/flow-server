@@ -22,10 +22,10 @@ func NewSchedule(regSvc *sendpoint.Registry, logger *zap.Logger) *Schedule {
 }
 
 func (s *Schedule) Schedule(
-	req *call.Request,
+	req *call.CallbackRequest,
 	ag *search.ActiveGraph,
 	ac *graph.DBEventCard,
-	res chan *call.Response,
+	res chan *call.CallbackResponse,
 ) {
 	g := ag.Graph
 	cursor := &state.Cursor{}
