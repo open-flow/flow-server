@@ -1,0 +1,471 @@
+definitions:
+  Action:
+    properties:
+      freeze:
+        type: string
+        x-go-name: Freeze
+      mergeContext:
+        additionalProperties:
+          type: object
+        type: object
+        x-go-name: MergeContext
+      slidePorts:
+        items:
+          type: string
+        type: array
+        x-go-name: SlidePorts
+      terminate:
+        type: boolean
+        x-go-name: Terminate
+    type: object
+    x-go-package: autoflow/pkg/engine/call
+  Cursor:
+    properties:
+      current:
+        $ref: '#/definitions/DataConnection'
+      next:
+        items:
+          $ref: '#/definitions/DataConnection'
+        type: array
+        x-go-name: Next
+      node:
+        $ref: '#/definitions/DataNode'
+      path:
+        items:
+          $ref: '#/definitions/DataConnection'
+        type: array
+        x-go-name: Path
+    type: object
+    x-go-package: autoflow/pkg/engine/state
+  DBConnection:
+    properties:
+      graphId:
+        format: uint64
+        type: integer
+        x-go-name: GraphId
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      localId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: LocalID
+      name:
+        type: string
+        x-go-name: Name
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+      sourceId:
+        format: uint64
+        type: integer
+        x-go-name: SourceID
+      sourcePort:
+        type: string
+        x-go-name: SourcePort
+      targetId:
+        format: uint64
+        type: integer
+        x-go-name: TargetId
+      targetPort:
+        type: string
+        x-go-name: TargetPort
+      ui:
+        type: string
+        x-go-name: Ui
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DBEventCard:
+    properties:
+      contextId:
+        type: string
+        x-go-name: ContextId
+      contextType:
+        type: string
+        x-go-name: ContextType
+      graphId:
+        format: uint64
+        type: integer
+        x-go-name: GraphId
+      httpVote:
+        format: uint64
+        type: integer
+        x-go-name: HttpVote
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      initiatorId:
+        type: string
+        x-go-name: InitiatorId
+      initiatorType:
+        type: string
+        x-go-name: InitiatorType
+      name:
+        type: string
+        x-go-name: Name
+      ownerId:
+        type: string
+        x-go-name: OwnerId
+      ownerType:
+        type: string
+        x-go-name: OwnerType
+      platform:
+        type: string
+        x-go-name: Platform
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+      resourceId:
+        type: string
+        x-go-name: ResourceId
+      resourceType:
+        type: string
+        x-go-name: ResourceType
+      slidePort:
+        type: string
+        x-go-name: SlidePort
+      staticId:
+        type: string
+        x-go-name: StaticId
+      staticType:
+        type: string
+        x-go-name: StaticType
+      targetId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: TargetId
+      ui:
+        type: string
+        x-go-name: Ui
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DBGraph:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/DBEventCard'
+        type: array
+        x-go-name: Cards
+      connections:
+        items:
+          $ref: '#/definitions/DBConnection'
+        type: array
+        x-go-name: Connections
+      counter:
+        format: uint64
+        type: integer
+        x-go-name: Counter
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      name:
+        type: string
+        x-go-name: Name
+      nodes:
+        items:
+          $ref: '#/definitions/DBNode'
+        type: array
+        x-go-name: Nodes
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+      ui:
+        type: string
+        x-go-name: Ui
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DBNode:
+    properties:
+      arguments:
+        type: string
+        x-go-name: Arguments
+      function:
+        type: string
+        x-go-name: Function
+      graphId:
+        format: uint64
+        type: integer
+        x-go-name: GraphId
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      localId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: LocalId
+      module:
+        description: Invocation
+        type: string
+        x-go-name: Module
+      name:
+        type: string
+        x-go-name: Name
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+      ui:
+        type: string
+        x-go-name: Ui
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataConnection:
+    properties:
+      localId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: LocalID
+      sourceId:
+        format: uint64
+        type: integer
+        x-go-name: SourceID
+      sourcePort:
+        type: string
+        x-go-name: SourcePort
+      targetId:
+        format: uint64
+        type: integer
+        x-go-name: TargetId
+      targetPort:
+        type: string
+        x-go-name: TargetPort
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataEvent:
+    properties:
+      contextId:
+        type: string
+        x-go-name: ContextId
+      contextType:
+        type: string
+        x-go-name: ContextType
+      initiatorId:
+        type: string
+        x-go-name: InitiatorId
+      initiatorType:
+        type: string
+        x-go-name: InitiatorType
+      ownerId:
+        type: string
+        x-go-name: OwnerId
+      ownerType:
+        type: string
+        x-go-name: OwnerType
+      platform:
+        type: string
+        x-go-name: Platform
+      resourceId:
+        type: string
+        x-go-name: ResourceId
+      resourceType:
+        type: string
+        x-go-name: ResourceType
+      staticId:
+        type: string
+        x-go-name: StaticId
+      staticType:
+        type: string
+        x-go-name: StaticType
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataEventCard:
+    properties:
+      contextId:
+        type: string
+        x-go-name: ContextId
+      contextType:
+        type: string
+        x-go-name: ContextType
+      httpVote:
+        format: uint64
+        type: integer
+        x-go-name: HttpVote
+      initiatorId:
+        type: string
+        x-go-name: InitiatorId
+      initiatorType:
+        type: string
+        x-go-name: InitiatorType
+      ownerId:
+        type: string
+        x-go-name: OwnerId
+      ownerType:
+        type: string
+        x-go-name: OwnerType
+      platform:
+        type: string
+        x-go-name: Platform
+      resourceId:
+        type: string
+        x-go-name: ResourceId
+      resourceType:
+        type: string
+        x-go-name: ResourceType
+      slidePort:
+        type: string
+        x-go-name: SlidePort
+      staticId:
+        type: string
+        x-go-name: StaticId
+      staticType:
+        type: string
+        x-go-name: StaticType
+      targetId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: TargetId
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataGraph:
+    properties:
+      counter:
+        format: uint64
+        type: integer
+        x-go-name: Counter
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataNode:
+    properties:
+      arguments:
+        type: string
+        x-go-name: Arguments
+      function:
+        type: string
+        x-go-name: Function
+      localId:
+        description: Placement
+        format: uint64
+        type: integer
+        x-go-name: LocalId
+      module:
+        description: Invocation
+        type: string
+        x-go-name: Module
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  DataUI:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+      ui:
+        type: string
+        x-go-name: Ui
+    type: object
+    x-go-package: autoflow/pkg/common
+  Error:
+    properties:
+      code:
+        type: string
+        x-go-name: Code
+      message:
+        type: string
+        x-go-name: Message
+    type: object
+    x-go-package: autoflow/pkg/engine/call
+  GraphObject:
+    properties:
+      graphId:
+        format: uint64
+        type: integer
+        x-go-name: GraphId
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+    type: object
+    x-go-package: autoflow/pkg/storage/graph
+  Memory:
+    properties:
+      context:
+        additionalProperties:
+          type: object
+        type: object
+        x-go-name: Context
+      response:
+        type: object
+        x-go-name: Response
+    type: object
+    x-go-package: autoflow/pkg/engine/state
+  ProjectModel:
+    properties:
+      id:
+        format: uint64
+        type: integer
+        x-go-name: Id
+      projectId:
+        format: uint64
+        type: integer
+        x-go-name: ProjectId
+    type: object
+    x-go-package: autoflow/pkg/common
+  endpointReturn:
+    properties:
+      action:
+        $ref: '#/definitions/Action'
+      error:
+        $ref: '#/definitions/Error'
+    type: object
+    x-go-name: Return
+    x-go-package: autoflow/pkg/engine/call
+  endpointState:
+    properties:
+      card:
+        $ref: '#/definitions/DBEventCard'
+      cursor:
+        $ref: '#/definitions/Cursor'
+      graph:
+        $ref: '#/definitions/DBGraph'
+      memory:
+        $ref: '#/definitions/Memory'
+      rawRequest:
+        type: object
+        x-go-name: RawRequest
+    type: object
+    x-go-name: State
+    x-go-package: autoflow/pkg/engine/state
+host: localhost:8080
+info:
+  description: Endpoint specification
+  title: Endpoint specification
+  version: 1.0.0
+paths:
+  /{functionId}:
+    post:
+      parameters:
+      - description: function name
+        in: path
+        name: functionId
+        required: true
+        type: string
+      - description: execution state
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/endpointState'
+      responses:
+        "200":
+          description: engine action
+          schema:
+            $ref: '#/definitions/endpointReturn'
+      summary: call function
+schemes:
+- http
+swagger: "2.0"
