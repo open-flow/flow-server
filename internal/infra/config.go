@@ -1,7 +1,9 @@
 package infra
 
 import (
+	"encoding/json"
 	"github.com/spf13/viper"
+	"log"
 )
 
 type FlowConfig struct {
@@ -37,5 +39,7 @@ func NewConfig() (*FlowConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+	bytes, _ := json.Marshal(&config)
+	log.Print(string(bytes))
 	return &config, nil
 }
