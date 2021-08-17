@@ -24,7 +24,11 @@ func NewRedis(deps RedisDeps) (RedisProduct, error) {
 	out := RedisProduct{}
 
 	out.Redis = redis.NewRing(&redis.RingOptions{
-		Addrs: deps.Config.Redis.Addr,
+		Addrs: map[string]string{
+			"host": deps.Config.RedisHost + ":" + deps.Config.RedisPort,
+		},
+		Username: deps.Config.RedisUsername,
+		Password: deps.Config.RedisPassword,
 	})
 
 	out.Locker = redislock.New(out.Redis)

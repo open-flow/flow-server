@@ -5,13 +5,16 @@ import (
 )
 
 type FlowConfig struct {
-	DSN         string
-	HttpAddr    string
-	HostName    string
-	NatsUrl     string
-	Development bool
-	ShowSql     bool
-	Redis       *RedisConfig
+	DSN           string
+	HttpAddr      string
+	HostName      string
+	NatsUrl       string
+	Development   bool
+	ShowSql       bool
+	RedisUsername string
+	RedisPassword string
+	RedisHost     string
+	RedisPort     string
 }
 
 type RedisConfig struct {
@@ -22,11 +25,9 @@ func NewConfig() (*FlowConfig, error) {
 	viper.SetDefault("DSN", "host=localhost user=postgres password=postgres dbname=flow port=5432 sslmode=disable TimeZone=Europe/Moscow")
 	viper.SetDefault("HostName", "localhost:8080")
 	viper.SetDefault("HttpAddr", ":8080")
-	viper.SetDefault("Redis", &RedisConfig{
-		Addr: map[string]string{
-			"server1": ":6379",
-		},
-	})
+
+	viper.SetDefault("RedisHost", "localhost")
+	viper.SetDefault("RedisPort", "6379")
 	viper.SetDefault("Development", false)
 	viper.SetDefault("NatsUrl", "")
 	viper.SetDefault("ShowSql", false)
