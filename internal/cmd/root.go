@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"log"
 )
 
 var rootCmd = &cobra.Command{
@@ -24,9 +25,12 @@ func init() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("flow")
+
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		panic(err)
+		log.Printf("unable to find config.yaml")
 	}
 }
