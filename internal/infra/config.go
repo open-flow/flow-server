@@ -27,7 +27,7 @@ func NewConfig() (*FlowConfig, error) {
 			"server1": ":6379",
 		},
 	})
-	viper.SetDefault("Development", true)
+	viper.SetDefault("Development", false)
 	viper.SetDefault("NatsUrl", "")
 	viper.SetDefault("ShowSql", false)
 
