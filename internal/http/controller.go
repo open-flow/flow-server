@@ -53,7 +53,7 @@ func NewController(
 	}
 
 	e.POST("/callback", c.Callback)
-	e.POST("/health", c.Callback)
+	e.GET("/health", c.Health)
 
 	e.GET("/graph/list", c.ListGraph)
 	e.GET("/graph", c.GetGraph)
