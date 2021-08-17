@@ -4,6 +4,8 @@ import (
 	"autoflow/pkg/storage/graph"
 )
 
+const LOOPING_MAX_COUNTER = 50
+
 // swagger:model endpointState
 type State struct {
 	Graph      *graph.DBGraph     `json:"graph"`

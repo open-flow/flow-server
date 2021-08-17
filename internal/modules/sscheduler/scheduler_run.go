@@ -19,6 +19,16 @@ LOOP:
 			break LOOP
 		}
 
+		loopExit := s.loopConstrain(st)
+		if loopExit {
+			s.logger.Error("exiting due to loop constrain",
+				zap.Uint("graphId", st.Graph.Id),
+				zap.Uint("projectId", st.Graph.ProjectId),
+				zap.Any("path", st.Cursor.Path),
+			)
+			break LOOP
+		}
+
 		current := st.Cursor.Next[0]
 		node := st.Graph.FindNode(current.TargetId).DataNode
 
@@ -87,6 +97,19 @@ LOOP:
 	if len(st.Cursor.Next) > 0 {
 		s.fork(st)
 	}
+}
+
+func (s *Schedule) loopConstrain(st *state.State) bool {
+	m := make(map[uint]uint)
+	for _, v := range st.Cursor.Path {
+		cnt, _ := m[v.LocalID]
+		cnt++
+		if cnt > state.LOOPING_MAX_COUNTER {
+			return true
+		}
+		m[v.LocalID] = cnt
+	}
+	return false
 }
 
 func (s *Schedule) fork(st *state.State) {
