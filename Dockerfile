@@ -1,5 +1,4 @@
 FROM golang:1.16-alpine AS builder
-RUN go version
 
 COPY . /app
 WORKDIR /app
@@ -18,3 +17,4 @@ COPY --from=builder /app/app .
 
 EXPOSE 8080
 ENTRYPOINT ["./app"]
+CMD "serve"
