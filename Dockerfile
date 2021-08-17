@@ -6,7 +6,7 @@ WORKDIR /app
 RUN set -x && \
     go mod tidy
 
-RUN go get -u github.com/swaggo/swag/cmd/swag \
+RUN go get -u github.com/swaggo/swag/cmd/swag  && \
     swag init -g internal/http/controller.go
 
 
