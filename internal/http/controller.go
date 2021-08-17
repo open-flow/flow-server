@@ -78,11 +78,15 @@ func NewController(
 	e.POST("/endpoint", c.SaveEndpoint)
 	e.DELETE("/endpoint", c.DeleteEndpoint)
 
+	loggerSvc.Info("endpoint binding complete")
+
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
+			loggerSvc.Info("starting http controller")
 			errCh := make(chan error)
 
 			go func() {
+				loggerSvc.Info("listening on " + config.HttpAddr)
 				err := e.Run(config.HttpAddr)
 				errCh <- err
 			}()
