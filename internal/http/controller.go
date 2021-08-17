@@ -12,8 +12,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
-	"net/http"
-	"reflect"
 	"time"
 )
 
@@ -98,40 +96,4 @@ func NewController(
 	})
 
 	return c
-}
-
-func (c *Controller) DoCall(g *gin.Context, method interface{}, bind func() (interface{}, error)) {
-	logger := c.logger.With(zap.String("url", g.Request.RequestURI), zap.String("method", g.Request.Method))
-	methodValue := reflect.ValueOf(method)
-	obj, err := bind()
-	if err != nil {
-		logger.Error("binding error", zap.Error(err))
-		return
-	}
-	resultValues := methodValue.Call([]reflect.Value{reflect.ValueOf(g), reflect.ValueOf(obj)})
-	var result interface{}
-	var errInf interface{}
-
-	switch len(resultValues) {
-	case 1:
-		errInf = resultValues[0].Interface()
-	case 2:
-		result = resultValues[0].Interface()
-		errInf = resultValues[1].Interface()
-	default:
-		panic("")
-	}
-
-	if errInf != nil {
-		err := errInf.(error)
-		logger.Error("service error", zap.Error(err))
-		_ = g.Error(err)
-		g.JSON(http.StatusInternalServerError, HttpError{
-			Message: err.Error(),
-		})
-		return
-	}
-
-	g.JSON(http.StatusOK, result)
-	logger.Info("request served", zap.Any("response", result))
 }

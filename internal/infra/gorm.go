@@ -3,7 +3,7 @@ package infra
 import (
 	"autoflow/pkg/storage/endpoint"
 	"autoflow/pkg/storage/graph"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -19,7 +19,7 @@ func NewGorm(config *FlowConfig) (*gorm.DB, error) {
 	if config.ShowSql {
 		gormConfig.Logger = logger.Default.LogMode(logger.Info)
 	}
-	db, err := gorm.Open(mysql.Open(config.MySqlDSN), gormConfig)
+	db, err := gorm.Open(postgres.Open(config.DSN), gormConfig)
 
 	if err != nil {
 		return nil, err
