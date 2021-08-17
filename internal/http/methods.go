@@ -30,6 +30,10 @@ func (c *Controller) Callback(g *gin.Context) {
 	g.JSON(http.StatusOK, res)
 }
 
+func (c *Controller) Health(g *gin.Context) {
+	g.String(200, "ok")
+}
+
 //@router /graph/list [get]
 //@param projectId query []int true "project ids"
 //@success 200 {object} storage.ListGraphResponse
