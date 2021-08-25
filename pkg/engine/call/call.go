@@ -8,6 +8,7 @@ type Error struct {
 type Action struct {
 	SlidePorts   []string               `json:"slidePorts,omitempty"`
 	MergeContext map[string]interface{} `json:"mergeContext,omitempty"`
+	Response     interface{}            `json:"response,omitempty"`
 	Terminate    bool                   `json:"terminate,omitempty"`
 	Freeze       string                 `json:"freeze,omitempty"`
 }

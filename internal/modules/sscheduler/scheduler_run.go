@@ -78,6 +78,10 @@ LOOP:
 			if len(wrapper.Action.SlidePorts) > 0 {
 				slidePorts = wrapper.Action.SlidePorts
 			}
+
+			if wrapper.Action.Response != nil {
+				st.Memory.Response = wrapper.Action.Response
+			}
 		}
 
 		var next []graph.DataConnection
