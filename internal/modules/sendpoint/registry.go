@@ -53,6 +53,7 @@ func (s *Registry) Call(st *state.State) (*call.Return, error) {
 		SetQueryParamsFromValues(endp.Values).
 		SetPathParam("function", st.Cursor.Function()).
 		SetQueryParam("function", st.Cursor.Function()).
+		SetBody(st).
 		SetResult(result).
 		Post(endp.Uri)
 	if err != nil {
